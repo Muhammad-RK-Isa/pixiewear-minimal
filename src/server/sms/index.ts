@@ -31,16 +31,16 @@ export const sendSMS = async (input: SendSMSInput | SendSMSInput[]) => {
   }
 
   if (env.NODE_ENV === "production") {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams(payload),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to send SMS. HTTP status: ${response.status}`);
+    try {
+      await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams(payload),
+      });
+    } catch (error) {
+      throw error;
     }
   } else {
     console.log("SMS Sent ", input)

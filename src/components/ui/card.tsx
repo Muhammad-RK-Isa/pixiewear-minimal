@@ -16,7 +16,7 @@ Card.displayName = "Card"
 
 const CardHeader: React.FC<React.ComponentProps<"div">> = ({ className, ...props }) => (
   <div
-    className={cn("flex flex-col space-y-1.5 p-4 sm:p-6", className)}
+    className={cn("flex flex-col space-y-1.5 p-4 sm:p-6 pb-0 sm:pb-0", className)}
     {...props}
   />
 )
