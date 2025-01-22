@@ -4,21 +4,16 @@ import { FormControl, FormField, FormInput, FormItem, FormLabel, FormMessage } f
 import { useFormContext } from "react-hook-form";
 import type { CreateOrderSchemaType } from "~/lib/validators";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { Button } from "../ui/button";
-import { cn } from "~/lib/utils";
 import towns from "~/lib/towns.json";
 import cities from "~/lib/cities.json";
 import states from "~/lib/states.json";
-import { CheckIcon, ChevronsUpDownIcon } from "lucide-react";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "../ui/command";
 import React from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 
 export function CreateOrderShippingForm() {
   const form = useFormContext<CreateOrderSchemaType>()
 
-  const {state, city, town} = form.watch()
+  const { state, city } = form.watch();
 
   const selectableCities = cities[state as keyof typeof cities] ?? [];
   const selectableTowns = towns[city as keyof typeof towns] ?? [];
@@ -127,7 +122,7 @@ export function CreateOrderShippingForm() {
                   <SelectTrigger>
                     <SelectValue
                       placeholder={
-                        !state 
+                        !state
                           ? "Select state first"
                           : !city
                             ? "Select district first"

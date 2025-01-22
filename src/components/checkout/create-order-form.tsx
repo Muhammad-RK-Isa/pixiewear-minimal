@@ -23,7 +23,7 @@ export function CreateOrderForm() {
           Checkout details
         </CardTitle>
       </CardHeader>
-      <CardContent className="pt-0 sm:pt-0 space-y-4">
+      <CardContent className="space-y-4">
         <FormField
           name="name"
           control={form.control}

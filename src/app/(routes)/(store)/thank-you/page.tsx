@@ -7,6 +7,8 @@ import Confetti from "~/components/confetti";
 import { env } from "~/env";
 import type { SearchParams } from "~/types";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
   title: "Thank you | Pixiewear",

@@ -1,6 +1,8 @@
 import { Products } from "~/components/store/products";
 import { api } from "~/trpc/server";
 
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
   const { data } = await api.product.getPublic();
   return (

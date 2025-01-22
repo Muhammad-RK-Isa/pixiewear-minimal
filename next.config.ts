@@ -13,6 +13,12 @@ const config: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  experimental: {
+    ppr: "incremental",
+    reactCompiler: {
+      compilationMode: "annotation",
+    }
+  }
 };
 
 export default config;

@@ -5,6 +5,8 @@ import { AddToCartForm } from '~/components/product/add-to-cart-form';
 import { Gallery } from '~/components/product/gallery';
 import { api } from '~/trpc/server';
 
+
+
 export async function generateMetadata(props: {
   params: Promise<{ productHandle: string }>;
 }): Promise<Metadata> {

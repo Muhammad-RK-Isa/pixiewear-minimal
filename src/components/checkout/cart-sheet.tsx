@@ -59,7 +59,7 @@ export function CartSheet() {
         {itemCount > 0 ? (
           <>
             <CartLineItems items={cartLineItems ?? []} className="flex-1" />
-            <div className="space-y-4 pr-6">
+            <div className="space-y-4 sm:pr-6">
               <Separator />
               <div className="space-y-1.5 text-sm">
                 <div className="flex">

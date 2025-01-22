@@ -18,6 +18,8 @@ interface ProductImageGalleryProps {
 }
 
 export function Gallery({ product }: ProductImageGalleryProps) {
+  "use memo";
+
   return (
     <Carousel
       orientation="horizontal"
@@ -43,6 +45,8 @@ export function Gallery({ product }: ProductImageGalleryProps) {
 }
 
 function CarouselThumb({ product }: ProductImageGalleryProps) {
+  "use memo";
+
   const carousel = useCarousel()
 
   return (
