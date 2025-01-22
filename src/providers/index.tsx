@@ -6,6 +6,7 @@ import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { useMediaQuery } from "usehooks-ts";
 import { TooltipProvider } from "~/components/ui/tooltip";
 import { Toaster } from "~/components/ui/sonner";
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   const isDesktop = useMediaQuery("(min-width: 1079px)");
@@ -20,6 +21,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
         <TooltipProvider>
           <NuqsAdapter>
             {children}
+            <SpeedInsights />
           </NuqsAdapter>
         </TooltipProvider>
         <Toaster
