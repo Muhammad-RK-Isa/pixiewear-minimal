@@ -62,7 +62,11 @@ export function SignInForm() {
   const {
     mutateAsync: sendVerificationCodeAsync,
     isPending: isSendingVerificationCode,
-  } = api.auth.sendVerificationCode.useMutation();
+  } = api.auth.sendVerificationCode.useMutation({
+    onError: (err) => {
+      toast.error(err.message);
+    }
+  });
 
   const { mutate: signIn, isPending } =
     api.auth.signIn.useMutation({
