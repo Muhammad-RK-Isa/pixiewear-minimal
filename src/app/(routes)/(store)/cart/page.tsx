@@ -5,6 +5,8 @@ import { api, HydrateClient } from "~/trpc/server"
 import { CartItems } from "./_components/cart-items";
 import { CheckoutCard } from "~/components/checkout/checkout-card";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
   title: "Cart",

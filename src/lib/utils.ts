@@ -8,7 +8,6 @@ import type { PostgresError } from "postgres";
 import { twMerge } from "tailwind-merge"
 import { v1 as uuidv1, v7 as uuidv7 } from "uuid"
 import type { QueryBuilderOpts } from "~/types";
-import type { FileEntity } from "./validators/file";
 import { z } from "zod";
 import { env } from "~/env";
 
@@ -63,21 +62,6 @@ export function formatDate(
     year: opts.year ?? "numeric",
     ...opts,
   }).format(new Date(date))
-}
-
-export function getFileType(rawType: File["type"]) {
-  let fileType: FileEntity["type"];
-
-  switch (true) {
-    case rawType.startsWith("video"):
-      fileType = "video";
-      break;
-    case rawType.startsWith("image"):
-    default:
-      fileType = "image";
-      break;
-  }
-  return fileType;
 }
 
 export function isPostgresError(error: unknown): error is PostgresError {

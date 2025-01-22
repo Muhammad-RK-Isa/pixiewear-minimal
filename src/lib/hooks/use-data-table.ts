@@ -31,10 +31,10 @@ import type {
   UseQueryStateOptions,
 } from "nuqs"
 import * as React from "react"
-import type { DataTableFilterField, ExtendedSortingState } from "./types"
+import type { DataTableFilterField, ExtendedSortingState } from "~/types"
 
 import { useDebouncedCallback } from "./use-debounced-callback"
-import { getSortingStateParser } from "./parsers"
+import { getSortingStateParser } from "~/lib/parsers"
 
 interface UseDataTableProps<TData>
   extends Omit<
