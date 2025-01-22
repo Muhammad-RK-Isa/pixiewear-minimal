@@ -17,7 +17,7 @@ export function CheckoutItemsSummary() {
 
   return (
     <div className="rounded-lg border bg-card space-y-6 overflow-hidden shadow-sm">
-      <Collapsible defaultOpen={isDesktop}>
+      <Collapsible defaultOpen={isDesktop} className="group/collapsible">
         <CollapsibleTrigger asChild>
           <Button
             size="lg"
@@ -28,7 +28,7 @@ export function CheckoutItemsSummary() {
             <span className="ml-auto text-muted-foreground">
               Total {items?.length} {items?.length > 1 ? "items" : "item"}
             </span>
-            <ChevronDownIcon />
+            <ChevronDownIcon className="group-data-[state=open]/collapsible:rotate-180 transition-all" />
           </Button>
         </CollapsibleTrigger>
         <CollapsibleContent className="border-t">

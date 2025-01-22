@@ -5,7 +5,13 @@ import { Separator } from "../ui/separator";
 import { Button } from "../ui/button";
 
 export function OrderSummaryCard() {
-  const { data: items, isRefetching } = api.cart.get.useQuery();
+  const { data: items } = api.cart.get.useQuery();
+  const utils = api.useUtils()
+  const orderMutations = utils.order.create.isMutating()
+  const verificationCodeMutations = utils.auth.sendVerificationCode.isMutating()
+  const signInMutations = utils.auth.signIn.isMutating()
+
+  const isPending = orderMutations >= 1 || verificationCodeMutations >= 1 || signInMutations >= 1
   
   if (!items?.length) return null;
 
@@ -32,14 +38,15 @@ export function OrderSummaryCard() {
         </div>
       </div>
       <Button
+        type="submit"
         size="lg"
         className="w-full"
-        disabled={isRefetching}
-        loading={isRefetching}
+        disabled={isPending}
+        loading={isPending}
         loader="dots"
         iconPosition="right"
       >
-        {isRefetching ? "Updating details" :"Place order"}
+        {isPending ? "Processing" : "Place order"}
       </Button>
     </div>
   )

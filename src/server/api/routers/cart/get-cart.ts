@@ -53,6 +53,8 @@ export async function getCart(ctx: TRPCContext) {
           return {
             ...item,
             quantity: quantity ?? 0,
+            price: Number(item.price),
+            mrp: Number(item.mrp),
           }
         })
       })

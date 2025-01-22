@@ -1,4 +1,4 @@
-import { decimal, integer, json, pgTable, text } from "drizzle-orm/pg-core";
+import { boolean, decimal, integer, json, pgTable, text } from "drizzle-orm/pg-core";
 import { generateOrderId, generatePGTableId, lifecycleDates } from "~/lib/utils";
 import type { CheckoutItemSchemaType } from "~/lib/validators";
 import { users } from "./users";
@@ -15,6 +15,7 @@ export const orders = pgTable("orders", {
   name: text("name").notNull(),
   email: text("email"),
   phone: text("phone").notNull(),
+  userVerified: boolean("user_verified").notNull().default(false),
   street: text("street").notNull(),
   town: text("town").notNull(),
   city: text("city").notNull(),

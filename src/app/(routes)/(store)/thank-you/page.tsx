@@ -1,9 +1,17 @@
 import { CheckCircle2Icon } from "lucide-react";
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import React from "react";
 import { z } from "zod";
 import Confetti from "~/components/confetti";
+import { env } from "~/env";
 import type { SearchParams } from "~/types";
+
+export const metadata: Metadata = {
+  metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
+  title: "Thank you | Pixiewear",
+  description: "Thank you for your order"
+}
 
 const searchParamsSchema = z.object({
   orderId: z.string(),
@@ -22,9 +30,9 @@ export default async function ThankYouPage({ searchParams }: ThankYouPageProps) 
 
   return (
     <div className="h-[80vh] lg:h-[80vh] grid place-content-center text-center">
-      <CheckCircle2Icon className="fill-green-500 stroke-background size-24 mx-auto mb-4" />
-      <h1 className="text-4xl font-bold">Order placed</h1>
-      <p className="font-medium mt-2">Thank you for your order. We will get in touch with you shortly.</p>
+      <CheckCircle2Icon className="fill-green-500 stroke-background size-24 mx-auto sm:mb-2" />
+      <h1 className="text-2xl sm:text-4xl font-bold">Order placed</h1>
+      <p className="text-sm sm:text-base font-medium mt-2 px-4">Thank you for your order. We will get in touch with you shortly.</p>
       <Confetti
         className="absolute left-0 top-0 z-0 size-full"
       />

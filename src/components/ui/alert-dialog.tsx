@@ -16,8 +16,7 @@ const AlertDialogOverlay: React.FC<React.ComponentProps<typeof AlertDialogPrimit
   <AlertDialogPrimitive.Overlay
     className={cn(
       "fixed inset-0 z-50",
-      "bg-dots-pattern dark:bg-dots-pattern-dark",
-      "[background-size:4px_4px]",
+      "bg-black/50",
       "[backdrop-filter:brightness(1.2)_blur(3px)]",
       "data-[state=open]:animate-in data-[state=closed]:animate-out",
       "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",

@@ -1,15 +1,14 @@
 import { z } from "zod";
 import { checkoutItemSchema } from "./cart";
+import { verificationCodeSchema } from "./user";
 
 export const orderSchema = z.object({
   id: z.string(),
   displayId: z.string(),
   items: checkoutItemSchema.array(),
-  quantity: z.number(),
-  amount: z.number(),
   name: z.string({ required_error: "Name is required" }).min(1, { message: "Name is required" }),
   email: z.string().optional(),
-  phone: z.string({ required_error: "Name is required" }).min(1, { message: "Name is required" }),
+  phone: z.string({ required_error: "Phone number is required" }).min(1, { message: "Phone number is required" }),
   street: z
     .string({ required_error: "Street/Village is required" })
     .min(1, { message: "Street/Village is invalid" }),
@@ -41,6 +40,8 @@ export const createOrderSchema = orderSchema.omit({
   createdAt: true,
   updatedAt: true,
   deletedAt: true,
+}).extend({
+  verificationCode: verificationCodeSchema.optional(),
 })
 
 export type OrderSchemaType = z.infer<typeof orderSchema>;
