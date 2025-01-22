@@ -294,7 +294,7 @@ export function SignInForm() {
               )}
               <Button
                 disabled={isPending || isSendingVerificationCode}
-                loading={isPending}
+                loading={isPending || isSendingVerificationCode}
                 loader="dots"
                 iconPosition="right"
                 className="w-full"

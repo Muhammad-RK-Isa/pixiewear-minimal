@@ -28,6 +28,4 @@ export async function sendVerificationCode(ctx: TRPCContext, input: SendVerifica
     message: `Your ${APP_TITLE} OTP is ${result.code}`,
     receiver: input.phone,
   })
-
-  return { success: true }
 }
