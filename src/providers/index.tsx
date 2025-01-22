@@ -15,7 +15,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
         attribute="class"
         enableColorScheme
         disableTransitionOnChange
-        defaultTheme="dark"
+        defaultTheme="system"
       >
         <TooltipProvider>
           <NuqsAdapter>
