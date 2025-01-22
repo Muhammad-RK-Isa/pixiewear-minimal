@@ -6,9 +6,13 @@ const config: NextConfig = {
     minimumCacheTTL: 31536000,
     remotePatterns: [
       {
-        hostname: "tshn3x6zzn.ufs.sh",
+        hostname: "e5l1qq20b7.ufs.sh",
+        protocol: "https",
+        pathname: "/**",
       }
-    ]
+    ],
+    deviceSizes: [320, 420, 768, 1024, 1200],
+    imageSizes: [16, 32, 48, 64, 96],
   },
   eslint: {
     ignoreDuringBuilds: true,

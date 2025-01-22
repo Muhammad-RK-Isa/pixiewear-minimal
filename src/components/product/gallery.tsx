@@ -33,6 +33,7 @@ export function Gallery({ product }: ProductImageGalleryProps) {
                 src={img}
                 alt={`${product.title}-image-${idx + 1}`}
                 fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 className="object-contain"
               />
             </SliderMainItem>
@@ -64,6 +65,7 @@ function CarouselThumb({ product }: ProductImageGalleryProps) {
             src={img}
             alt={`${product.title}-image-${idx + 1}`}
             fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             className="object-cover"
           />
         </SliderThumbItem>
