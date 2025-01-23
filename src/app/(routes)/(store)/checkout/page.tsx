@@ -3,6 +3,7 @@ import { api, HydrateClient } from "~/trpc/server";
 import { CheckoutForm } from "./_components/checkout-form";
 import type { Metadata } from "next";
 import { env } from "~/env";
+import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -13,11 +14,16 @@ export const metadata: Metadata = {
 export default async function Checkout() {
   void await api.cart.get.prefetch();
 
-  const cartLineItemsPromise = api.cart.get();
+  const cartLineItems = await api.cart.get();
+
+  if (!cartLineItems.length) {
+    return redirect("/");
+  }
+
   return (
     <main >
       <HydrateClient>
-        <CheckoutForm itemsPromise={cartLineItemsPromise} />
+        <CheckoutForm cartLineItems={cartLineItems} />
       </HydrateClient>
     </main>
   )

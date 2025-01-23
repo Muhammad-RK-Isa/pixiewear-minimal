@@ -31,7 +31,7 @@ export const metadata: Metadata = {
   ],
   creator: "muhammad-rk-isa",
   openGraph: {
-    type: "website",
+    type: "website", 
     locale: "en_US",
     url: siteConfig.url,
     title: siteConfig.name,

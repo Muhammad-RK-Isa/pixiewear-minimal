@@ -8,7 +8,7 @@ export function PaymentMethod() {
       <CardHeader>
         <CardTitle className="text-xl sm:text-2xl">Payment Method</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4 pt-0 sm:pt-0">
+      <CardContent className="space-y-4">
         <RadioGroup defaultValue="cod">
           <Label
             htmlFor="homeDelivery"

@@ -24,7 +24,7 @@ export function CheckoutCard() {
         </div>
         <div className="inline-flex items-center justify-between gap-4 w-full text-sm">
           <p className="text-card-foreground/80">Shipping</p>
-          <span className="font-medium text-muted-foreground">Calculated on the checkout page</span>
+          <span className="font-medium text-muted-foreground italic">Calculated on the checkout page</span>
         </div>
         <Separator />
         <div className="inline-flex items-center justify-between gap-4 w-full text-sm">

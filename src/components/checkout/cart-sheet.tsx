@@ -51,15 +51,15 @@ export function CartSheet() {
           <ShoppingCartIcon className="size-4" aria-hidden="true" />
         </Button>
       </SheetTrigger>
-      <SheetContent className="flex w-full flex-col pr-0 sm:max-w-lg">
-        <SheetHeader className="space-y-2.5 sm:pr-6">
+      <SheetContent className="flex w-full flex-col sm:max-w-lg">
+        <SheetHeader className="space-y-2.5">
           <SheetTitle>Cart {itemCount > 0 && `(${itemCount})`}</SheetTitle>
           <Separator />
         </SheetHeader>
         {itemCount > 0 ? (
           <>
             <CartLineItems items={cartLineItems ?? []} className="flex-1" />
-            <div className="space-y-4 sm:pr-6">
+            <div className="space-y-4">
               <Separator />
               <div className="space-y-1.5 text-sm">
                 <div className="flex">

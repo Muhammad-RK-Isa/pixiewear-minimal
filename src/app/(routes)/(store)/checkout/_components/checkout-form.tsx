@@ -19,11 +19,10 @@ import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogHea
 import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "~/components/ui/input-otp";
 
 interface CheckoutFormProps {
-  itemsPromise: Promise<AppRouterOutputs["cart"]["get"]>
+  cartLineItems: AppRouterOutputs["cart"]["get"]
 }
 
-export function CheckoutForm({ itemsPromise }: CheckoutFormProps) {
-  const cartLineItems = React.use(itemsPromise)
+export function CheckoutForm({ cartLineItems }: CheckoutFormProps) {
 
   const router = useRouter();
   const [isOTPVerificationModalOpen, setIsOTPVerificationModalOpen] = React.useState(false)
