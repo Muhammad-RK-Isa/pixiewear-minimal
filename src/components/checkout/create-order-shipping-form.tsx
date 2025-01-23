@@ -25,7 +25,7 @@ export function CreateOrderShippingForm() {
           Shipping
         </CardTitle>
       </CardHeader>
-      <CardContent className="pt-0 sm:pt-0 grid md:grid-cols-2 gap-4">
+      <CardContent className="grid md:grid-cols-2 gap-4">
         <FormField
           name="street"
           control={form.control}
@@ -160,4 +160,3 @@ export function CreateOrderShippingForm() {
     </Card>
   )
 }
-

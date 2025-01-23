@@ -60,3 +60,23 @@ export interface QueryBuilderOpts {
   distinct?: boolean;
   nullish?: boolean;
 }
+
+export type MetaEvent = {
+  eventName: "PageView" | "ViewContent" | "AddToCart" | "RemoveFromCart" | "Checkout" | "Purchase"
+  eventId?: string
+  emails?: Array<string> | null
+  phones?: Array<string> | null
+  firstName?: string
+  lastName?: string
+  country?: string
+  city?: string
+  zipCode?: string
+  products?: {
+    id: string
+    quantity: number
+  }[]
+  value?: number
+  currency?: string
+  enableStandardPixel?: boolean
+  testEventCode?: string
+};

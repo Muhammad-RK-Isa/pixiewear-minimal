@@ -4,6 +4,10 @@ import { TRPCError } from "@trpc/server";
 import { cookies } from "next/headers";
 import { carts } from "~/server/db/schema/carts";
 import { eq } from "drizzle-orm";
+import { sendMetaEvents } from "~/server/meta-capi";
+import type { MetaEvent } from "~/types";
+import { generateId } from "~/lib/utils";
+import { env } from "~/env";
 
 export async function addToCart(ctx: TRPCContext, input: CartItem) {
   const product = await ctx.db.query.products.findFirst({
@@ -97,6 +101,25 @@ export async function addToCart(ctx: TRPCContext, input: CartItem) {
       items: cart.items,
     })
     .where(eq(carts.id, cartId))
+
+  // Send event to meta capi
+  const event: MetaEvent = {
+    eventId: generateId(),
+    eventName: "AddToCart",
+    firstName: ctx.user?.name?.split(" ")[0] ?? ctx.user?.name ?? "",
+    lastName: ctx.user?.name?.split(" ")[1] ?? "",
+    emails: [ctx.user?.email ?? ""],
+    phones: [ctx.user?.phone ?? ""],
+    products: [{
+      id: input.productId,
+      quantity: input.quantity,
+    }],
+    testEventCode: env.NEXT_PUBLIC_FB_PIXEL_TEST_ID,
+  }
+
+  const result = await sendMetaEvents(event);
+
+  console.log("PIXEL EVENT RESULT: ", result);
 
   return
 }
