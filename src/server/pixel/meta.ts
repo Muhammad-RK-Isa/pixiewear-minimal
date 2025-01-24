@@ -10,7 +10,7 @@ interface MetaReponse {
 import { cookies, headers } from "next/headers";
 import { env } from "~/env";
 import { META_GRAPH_API_ENDPOINT } from "~/lib/constants";
-import { generateId } from "~/lib/utils";
+import { generateId, sha256Hash } from "~/lib/utils";
 
 async function getUserInfo() {
   const heads = await headers();
@@ -124,6 +124,66 @@ export async function metaAddToCart(product: { id: string; name: string; price: 
       value: product.price,
       currency: product.currency,
       content_type: "product",
+    },
+  }
+
+  return postEventToMeta({ data: [event] });
+}
+
+interface MetaBeginCheckout {
+  user: {
+    email?: string
+    phone: string
+    firstName: string
+    lastName?: string
+    city: string
+    state: string
+    country: string
+    zipCode?: string
+  };
+  products: {
+    id: string;
+    quantity: number;
+  }[];
+  total_price: number;
+  eventName: "BeginCheckout" | "Purchase";
+}
+
+export async function metaCheckout({
+  products,
+  total_price,
+  user,
+  eventName,
+}: MetaBeginCheckout): Promise<MetaReponse> {
+  const { ipAddress, userAgent, fbclid, sourceUrl } = await getUserInfo();
+
+  const event = {
+    event_id: generateId(),
+    event_name: eventName,
+    event_time: Math.floor(new Date().getTime() / 1000), 
+    action_source: "website",
+    user_data: {
+      client_ip_address: ipAddress,
+      client_user_agent: userAgent,
+      ...(user.email && { em: sha256Hash(user.email) }),
+      ...(user.phone && { ph: sha256Hash(user.phone) }),
+      ...(user.firstName && { fn: sha256Hash(user.firstName) }),
+      ...(user.lastName && { ln: sha256Hash(user.lastName) }),
+      ...(user.city && { ct: sha256Hash(user.city) }),
+      ...(user.state && { st: sha256Hash(user.state) }),
+      ...(user.country && { country: sha256Hash(user.country) }),
+      ...(user.zipCode && { zp: sha256Hash(user.zipCode) }),
+      fbc: fbclid,
+    },
+    event_source_url: sourceUrl,
+    content_type: "product",
+    contents: products.map((product) => ({
+      id: product.id,
+      quantity: product.quantity,
+    })),
+    custom_data: {
+      value: total_price,
+      currency: "BDT",
     },
   }
 

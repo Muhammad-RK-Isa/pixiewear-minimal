@@ -17,6 +17,7 @@ import type { AppRouterOutputs } from "~/server/api";
 import React from "react";
 import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogHeader, AlertDialogTitle } from "~/components/ui/alert-dialog";
 import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "~/components/ui/input-otp";
+import { metaCheckout } from "~/server/pixel/meta";
 
 interface CheckoutFormProps {
   cartLineItems: AppRouterOutputs["cart"]["get"]
@@ -65,7 +66,45 @@ export function CheckoutForm({ cartLineItems }: CheckoutFormProps) {
   })
 
   const { mutate: createOrder, error: orderError } = api.order.create.useMutation({
-    onSuccess: (data) => {
+    onMutate: async () => {
+      await metaCheckout({
+        products: cartLineItems.map((itm) => ({
+          id: itm.id,
+          quantity: itm.quantity,
+        })),
+        total_price: cartLineItems.reduce((acc, itm) => acc + itm.price, 0),
+        user: {
+          email: form.getValues("email"),
+          phone: form.getValues("phone"),
+          firstName: form.getValues("name").split(" ")[0] ?? "",
+          lastName: form.getValues("name").split(" ")[1],
+          city: form.getValues("city"),
+          state: form.getValues("state"),
+          country: form.getValues("country"),
+          zipCode: form.getValues("postCode"),
+        },
+        eventName: "BeginCheckout",
+      })
+    },
+    onSuccess: async (data) => {
+      await metaCheckout({
+        products: cartLineItems.map((itm) => ({
+          id: itm.id,
+          quantity: itm.quantity,
+        })),
+        total_price: cartLineItems.reduce((acc, itm) => acc + itm.price, 0),
+        user: {
+          email: form.getValues("email"),
+          phone: form.getValues("phone"),
+          firstName: form.getValues("name").split(" ")[0] ?? "",
+          lastName: form.getValues("name").split(" ")[1],
+          city: form.getValues("city"),
+          state: form.getValues("state"),
+          country: form.getValues("country"),
+          zipCode: form.getValues("postCode"),
+        },
+        eventName: "Purchase",
+      })
       router.push(`/thank-you?orderId=${data.orderId}`)
     },
     onError: async (err) => {

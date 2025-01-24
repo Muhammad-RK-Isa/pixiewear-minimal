@@ -31,7 +31,7 @@ export default async function ThankYouPage({ searchParams }: ThankYouPageProps) 
   }
 
   return (
-    <div className="h-[80vh] lg:h-[80vh] grid place-content-center text-center">
+    <div className="grid place-content-center text-center h-[60vh]">
       <CheckCircle2Icon className="fill-green-500 stroke-background size-24 mx-auto sm:mb-2" />
       <h1 className="text-2xl sm:text-4xl font-bold">Order placed</h1>
       <p className="text-sm sm:text-base font-medium mt-2 px-4">Thank you for your order. We will get in touch with you shortly.</p>

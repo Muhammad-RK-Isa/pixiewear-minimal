@@ -7,7 +7,7 @@ import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
-  title: "Checkout | Pixiewear",
+  title: "Checkout",
   description: "Checkout with your selected products"
 }
 
@@ -21,7 +21,7 @@ export default async function Checkout() {
   }
 
   return (
-    <main >
+    <main>
       <HydrateClient>
         <CheckoutForm cartLineItems={cartLineItems} />
       </HydrateClient>

@@ -91,6 +91,10 @@ export function AddToCartForm({ product }: AddToCartFormProps) {
     });
   }
 
+  const { data: cartLineItems } = api.cart.get.useQuery()
+  
+  const isAddedToCart = !!cartLineItems?.find((item) => item.id === product.id)
+
   return (
     <>
       <Form {...form}>
@@ -158,9 +162,7 @@ export function AddToCartForm({ product }: AddToCartFormProps) {
               className="w-full h-12"
               onClick={async () => {
                 setIsBuyingNow(true)
-                const isAddedToCart = !!utils.cart.get.getData()?.find((item) => item.id === product.id)
                 if (isAddedToCart) {
-                  console.log(isAddedToCart);
                   setIsBuyingNow(false);
                   router.push("/cart");
                   return;

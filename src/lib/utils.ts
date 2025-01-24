@@ -10,6 +10,8 @@ import { v1 as uuidv1, v7 as uuidv7 } from "uuid"
 import type { QueryBuilderOpts } from "~/types";
 import { z } from "zod";
 import { env } from "~/env";
+import { createHash } from "crypto";
+import { sha256 } from "@oslojs/crypto/sha2";
 
 export function getBaseUrl() {
   if (typeof window !== "undefined") return window.location.origin;
@@ -417,3 +419,16 @@ export function slugify(str: string) {
     .replace(/--+/g, "-")
     .replace(/^-+|-+$/g, "")
 }
+
+export const sha256Hash = async (string: string): Promise<string> => {
+  const crypto = new Crypto();
+  const encoder = new TextEncoder();
+  const data = encoder.encode(string);
+
+  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray.map(byte => byte.toString(16).padStart(2, "0")).join("");
+
+  return hashHex;
+};
