@@ -130,15 +130,15 @@ export async function metaAddToCart(product: { id: string; name: string; price: 
   return postEventToMeta({ data: [event] });
 }
 
-interface MetaBeginCheckout {
+interface MetaInitiateCheckout {
   user: {
     email?: string
-    phone: string
-    firstName: string
+    phone?: string
+    firstName?: string
     lastName?: string
-    city: string
-    state: string
-    country: string
+    city?: string
+    state?: string
+    country?: string
     zipCode?: string
   };
   products: {
@@ -146,7 +146,7 @@ interface MetaBeginCheckout {
     quantity: number;
   }[];
   total_price: number;
-  eventName: "BeginCheckout" | "Purchase";
+  eventName: "InitiateCheckout" | "Purchase";
 }
 
 export async function metaCheckout({
@@ -154,7 +154,7 @@ export async function metaCheckout({
   total_price,
   user,
   eventName,
-}: MetaBeginCheckout): Promise<MetaReponse> {
+}: MetaInitiateCheckout): Promise<MetaReponse> {
   const { ipAddress, userAgent, fbclid, sourceUrl } = await getUserInfo();
 
   const event = {

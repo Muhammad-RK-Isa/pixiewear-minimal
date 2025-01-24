@@ -1,23 +1,23 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import React from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { CheckoutItemsSummary } from "~/components/checkout/checkout-items-summary";
 import { CreateOrderForm } from "~/components/checkout/create-order-form";
 import { CreateOrderShippingForm } from "~/components/checkout/create-order-shipping-form";
-import { Form } from "~/components/ui/form";
-import { createOrderSchema, type CreateOrderSchemaType } from "~/lib/validators";
-import { PaymentMethod } from "./payment-method";
-import { DeliveryMethod } from "./delivery-method";
-import { api } from "~/trpc/react";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-import { CheckoutItemsSummary } from "~/components/checkout/checkout-items-summary";
 import { OrderSummaryCard } from "~/components/checkout/order-summary-card";
-import type { AppRouterOutputs } from "~/server/api";
-import React from "react";
 import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogHeader, AlertDialogTitle } from "~/components/ui/alert-dialog";
+import { Form } from "~/components/ui/form";
 import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "~/components/ui/input-otp";
+import { createOrderSchema, type CreateOrderSchemaType } from "~/lib/validators";
+import type { AppRouterOutputs } from "~/server/api";
 import { metaCheckout } from "~/server/pixel/meta";
+import { api } from "~/trpc/react";
+import { DeliveryMethod } from "./delivery-method";
+import { PaymentMethod } from "./payment-method";
 
 interface CheckoutFormProps {
   cartLineItems: AppRouterOutputs["cart"]["get"]
@@ -66,26 +66,6 @@ export function CheckoutForm({ cartLineItems }: CheckoutFormProps) {
   })
 
   const { mutate: createOrder, error: orderError } = api.order.create.useMutation({
-    onMutate: async () => {
-      await metaCheckout({
-        products: cartLineItems.map((itm) => ({
-          id: itm.id,
-          quantity: itm.quantity,
-        })),
-        total_price: cartLineItems.reduce((acc, itm) => acc + itm.price, 0),
-        user: {
-          email: form.getValues("email"),
-          phone: form.getValues("phone"),
-          firstName: form.getValues("name").split(" ")[0] ?? "",
-          lastName: form.getValues("name").split(" ")[1],
-          city: form.getValues("city"),
-          state: form.getValues("state"),
-          country: form.getValues("country"),
-          zipCode: form.getValues("postCode"),
-        },
-        eventName: "BeginCheckout",
-      })
-    },
     onSuccess: async (data) => {
       await metaCheckout({
         products: cartLineItems.map((itm) => ({
@@ -145,6 +125,35 @@ export function CheckoutForm({ cartLineItems }: CheckoutFormProps) {
       })
     }
   }
+
+  const trpcUtils = api.useUtils()
+
+  
+  React.useEffect(() => {
+    const triggerInitiateCheckout = async () => {
+      await trpcUtils.auth.session.fetch().then(async ({ user }) => {
+        console.log("FIRING_META_INITIATE_CHECKOUT")
+        await metaCheckout({
+          products: cartLineItems.map((itm) => ({
+            id: itm.id,
+            quantity: itm.quantity,
+          })),
+          total_price: cartLineItems.reduce((acc, itm) => acc + itm.price, 0),
+          user: {
+            email: user?.email ?? "",
+            phone: user?.phone ?? "",
+            firstName: user?.name?.split(" ")[0] ?? "",
+            lastName: user?.name?.split(" ")[1],
+            country: "Bangladesh",
+          },
+          eventName: "InitiateCheckout",
+        })
+      }
+      )
+    }
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    triggerInitiateCheckout()
+  }, [])
 
   return (
     <>
