@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import React from 'react';
+import { MetaPageViewTrigger } from '~/components/meta/meta-page-view-trigger';
 import { AddToCartForm } from '~/components/product/add-to-cart-form';
 import { Gallery } from '~/components/product/gallery';
 import { api } from '~/trpc/server';
@@ -67,7 +68,7 @@ export default async function ProductPage(props: { params: Promise<{ productHand
   };
 
   return (
-    <>
+    <MetaPageViewTrigger>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -97,12 +98,12 @@ export default async function ProductPage(props: { params: Promise<{ productHand
             </p>
             <div className='mt-2 lg:mt-8'>
               <React.Suspense>
-                <AddToCartForm product={product}/>
+                <AddToCartForm product={product} />
               </React.Suspense>
             </div>
           </div>
         </div>
       </div>
-    </>
+    </MetaPageViewTrigger>
   )
 }

@@ -12,13 +12,31 @@ import {
 import { cn } from "~/lib/utils";
 import React from "react";
 import type { AppRouterOutputs } from "~/server/api";
+import { metaViewContent } from "~/server/pixel/meta";
 
 interface ProductImageGalleryProps {
-  product: AppRouterOutputs["product"]["getByHandle"]
+  product: NonNullable<AppRouterOutputs["product"]["getByHandle"]>
 }
 
 export function Gallery({ product }: ProductImageGalleryProps) {
   "use memo";
+
+  React.useEffect(() => {
+    const triggerViewContent = async () => {
+      const result = await metaViewContent({
+        id: product.id,
+        name: product.title,
+        price: parseFloat(product.price),
+        currency: "BDT",
+      })
+
+      console.log("VIEW_CONTENT_EVENT: ", result);
+    };
+
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    triggerViewContent()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Carousel
