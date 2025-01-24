@@ -79,7 +79,7 @@ export function CartSheet() {
                 <SheetTrigger asChild>
                   <Link
                     aria-label="View your cart"
-                    href="/cart"
+                    href="/checkout"
                     className={buttonVariants({
                       size: "lg",
                       className: "w-full",

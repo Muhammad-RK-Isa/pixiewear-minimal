@@ -132,7 +132,6 @@ export function CheckoutForm({ cartLineItems }: CheckoutFormProps) {
   React.useEffect(() => {
     const triggerInitiateCheckout = async () => {
       await trpcUtils.auth.session.fetch().then(async ({ user }) => {
-        console.log("FIRING_META_INITIATE_CHECKOUT")
         await metaCheckout({
           products: cartLineItems.map((itm) => ({
             id: itm.id,
