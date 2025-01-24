@@ -19,7 +19,7 @@ async function getUserInfo() {
 
   const userAgent = heads.get("user-agent");
 
-  const fbclid = (await cookies()).get("_fbc")?.value;
+  const fbclid = (await cookies()).get("_fbc")?.value ?? "";
 
   const pathname = heads.get("x-path");
 
@@ -37,6 +37,8 @@ async function postEventToMeta(eventBody: Record<string, unknown>): Promise<Meta
   const pixelId = env.META_PIXEL_ID;
 
   const graphApiEndpoint = `${META_GRAPH_API_ENDPOINT}/${pixelId}/events`;
+
+  console.log(JSON.stringify(eventBody));
 
   const response = await fetch(graphApiEndpoint, {
     method: "POST",
@@ -63,16 +65,17 @@ export async function metaPageView(): Promise<MetaReponse> {
   const event = {
     event_id: generateId(),
     event_name: "PageView",
-    event_time: Math.floor(new Date().getTime() / 1000), // Unix timestamp in seconds
+    event_time: Math.floor(new Date().getTime() / 1000), 
+    action_source: "website",
     user_data: {
       client_ip_address: ipAddress,
       client_user_agent: userAgent,
-      fbc: fbclid, // Facebook click ID, optional but recommended
+      fbc: fbclid,
     },
     event_source_url: sourceUrl,
   }
 
-  return postEventToMeta({ data: [event] });
+  return postEventToMeta({ data: [event]});
 }
 
 export async function metaViewContent(product: { id: string; name: string; price: number; currency: string }): Promise<MetaReponse> {
@@ -81,7 +84,34 @@ export async function metaViewContent(product: { id: string; name: string; price
   const event = {
     event_id: generateId(),
     event_name: "ViewContent",
-    event_time: Math.floor(new Date().getTime() / 1000), // Unix timestamp in seconds
+    event_time: Math.floor(new Date().getTime() / 1000), 
+    action_source: "website",
+    user_data: {
+      client_ip_address: ipAddress,
+      client_user_agent: userAgent,
+      fbc: fbclid,
+    },
+    event_source_url: sourceUrl,
+    custom_data: {
+      content_ids: [product.id],
+      content_name: product.name,
+      value: product.price,
+      currency: product.currency,
+      content_type: "product",
+    },
+  }
+
+  return postEventToMeta({ data: [event] });
+}
+
+export async function metaAddToCart(product: { id: string; name: string; price: number; currency: string }): Promise<MetaReponse> {
+  const { ipAddress, userAgent, fbclid, sourceUrl } = await getUserInfo();
+
+  const event = {
+    event_id: generateId(),
+    event_name: "AddToCart",
+    event_time: Math.floor(new Date().getTime() / 1000), 
+    action_source: "website",
     user_data: {
       client_ip_address: ipAddress,
       client_user_agent: userAgent,

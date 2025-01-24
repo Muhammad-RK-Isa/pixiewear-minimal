@@ -23,6 +23,7 @@ import { api } from "~/trpc/react"
 import { AddToCartPopUp } from "./add-to-cart-pop-up"
 import type { AppRouterOutputs } from "~/server/api"
 import { useMediaQuery } from "usehooks-ts"
+import { metaAddToCart } from "~/server/pixel/meta"
 
 interface AddToCartFormProps {
   product: NonNullable<AppRouterOutputs["product"]["getByHandle"]>
@@ -46,8 +47,15 @@ export function AddToCartForm({ product }: AddToCartFormProps) {
 
   const utils = api.useUtils()
 
-  const { mutateAsync: addToCartAsync } = api.cart.addItem.useMutation({
-
+  const { mutateAsync: addToCartAsync, isPending } = api.cart.addItem.useMutation({
+    onSuccess: async () => {
+      await metaAddToCart({
+        id: product.id,
+        name: product.title,
+        price: parseFloat(product.price),
+        currency: "BDT",
+      });
+    }
   })
 
   async function onSubmit(data: UpdateCartItemSchemaType) {
@@ -57,7 +65,7 @@ export function AddToCartForm({ product }: AddToCartFormProps) {
       onSuccess: async () => {
         await utils.cart.get.invalidate()
         if (isDesktop) {
-          toast.message("Product added to cart", {          
+          toast.message("Product added to cart", {
             action: (
               <button
                 className="rounded-lg border p-1.5 ml-auto bg-accent/50 text-xs"
@@ -65,7 +73,7 @@ export function AddToCartForm({ product }: AddToCartFormProps) {
                   router.push("/cart");
                   toast.dismiss()
                 }}
-              > 
+              >
                 View Cart
               </button>
             ),
@@ -85,110 +93,117 @@ export function AddToCartForm({ product }: AddToCartFormProps) {
 
   return (
     <>
-    <Form {...form}>
-      <form
-        className="space-y-4"
-        onSubmit={form.handleSubmit(onSubmit)}
-      >
-        <div className="flex items-center divide-x rounded-md border w-max gap-px">
-          <Button
-            id={`${id}-decrement`}
-            type="button"
-            variant="ghost"
-            size="icon"
-            className="size-10 shrink-0 rounded-r-none"
-            onClick={() =>
-              form.setValue(
-                "quantity",
-                Math.max(0, form.getValues("quantity") - 1)
-              )
-            }
-            disabled={isAddingToCart}
-          >
-            <MinusIcon className="size-4" aria-hidden="true" />
-            <span className="sr-only">Remove one item</span>
-          </Button>
-          <FormField
-            control={form.control}
-            name="quantity"
-            render={({ field }) => (
-              <FormItem className="space-y-0">
-                <FormLabel className="sr-only">Quantity</FormLabel>
-                <FormControl>
-                  <Input
-                    type="number"
-                    inputMode="numeric"
-                    className="h-10 w-16 rounded-none border-none text-center"
-                    {...field}
-                    onChange={field.onChange}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button
-            id={`${id}-increment`}
-            type="button"
-            variant="ghost"
-            size="icon"
-            className="size-10 shrink-0 rounded-l-none"
-            onClick={() =>
-              form.setValue("quantity", form.getValues("quantity") + 1)
-            }
-            disabled={isAddingToCart}
-          >
-            <PlusIcon className="size-3" aria-hidden="true" />
-            <span className="sr-only">Add one item</span>
-          </Button>
-        </div>
-        <div className="space-y-2">
-          <Button
-            type="button"
-            aria-label="Buy now"
-            size="lg"
-            className="w-full h-12"
-            onClick={async () => {
-              setIsBuyingNow(true)
-              await addToCartAsync({
-                productId: product.id,
-                quantity: form.getValues("quantity"),
-              }, {
-                // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                onSuccess: async () => {
-                  await utils.cart.get.invalidate();
-                  router.push("/cart")
-                },
-                onError: (err) => {
-                  toast.error(err.message)
-                },
-                onSettled: () => {
-                  setIsBuyingNow(false)
+      <Form {...form}>
+        <form
+          className="space-y-4"
+          onSubmit={form.handleSubmit(onSubmit)}
+        >
+          <div className="flex items-center divide-x rounded-md border w-max gap-px">
+            <Button
+              id={`${id}-decrement`}
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="size-10 shrink-0 rounded-r-none"
+              onClick={() =>
+                form.setValue(
+                  "quantity",
+                  Math.max(0, form.getValues("quantity") - 1)
+                )
+              }
+              disabled={isAddingToCart}
+            >
+              <MinusIcon className="size-4" aria-hidden="true" />
+              <span className="sr-only">Remove one item</span>
+            </Button>
+            <FormField
+              control={form.control}
+              name="quantity"
+              render={({ field }) => (
+                <FormItem className="space-y-0">
+                  <FormLabel className="sr-only">Quantity</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      inputMode="numeric"
+                      className="h-10 w-16 rounded-none border-none text-center"
+                      {...field}
+                      onChange={field.onChange}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button
+              id={`${id}-increment`}
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="size-10 shrink-0 rounded-l-none"
+              onClick={() =>
+                form.setValue("quantity", form.getValues("quantity") + 1)
+              }
+              disabled={isAddingToCart}
+            >
+              <PlusIcon className="size-3" aria-hidden="true" />
+              <span className="sr-only">Add one item</span>
+            </Button>
+          </div>
+          <div className="space-y-2">
+            <Button
+              type="button"
+              aria-label="Buy now"
+              size="lg"
+              className="w-full h-12"
+              onClick={async () => {
+                setIsBuyingNow(true)
+                const isAddedToCart = !!utils.cart.get.getData()?.find((item) => item.id === product.id)
+                if (isAddedToCart) {
+                  console.log(isAddedToCart);
+                  setIsBuyingNow(false);
+                  router.push("/cart");
+                  return;
                 }
-              })
-            }}
-            disabled={isBuyingNow}
-            loader="dots"
-            iconPosition="right"
-            loading={isBuyingNow}
-          >
-            Buy now
-          </Button>
-          <Button
-            aria-label="Add to cart"
-            type="submit"
-            variant="outline"
-            size="lg"
-            className="w-full h-12"
-            disabled={isAddingToCart}
-            loading={isAddingToCart}
-            loader="dots"
-            iconPosition="right"
-          >
-            Add to cart
-          </Button>
-        </div>
-      </form>
+                await addToCartAsync({
+                  productId: product.id,
+                  quantity: form.getValues("quantity"),
+                }, {
+                  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                  onSuccess: async () => {
+                    await utils.cart.get.invalidate();
+                    router.push("/cart")
+                  },
+                  onError: (err) => {
+                    toast.error(err.message)
+                  },
+                  onSettled: () => {
+                    setIsBuyingNow(false)
+                  }
+                })
+              }}
+              disabled={isBuyingNow || isPending}
+              loader="dots"
+              iconPosition="right"
+              loading={isBuyingNow}
+            >
+              Buy now
+            </Button>
+            <Button
+              aria-label="Add to cart"
+              type="submit"
+              variant="outline"
+              size="lg"
+              className="w-full h-12"
+              disabled={isAddingToCart || isPending}
+              loading={isAddingToCart}
+              loader="dots"
+              iconPosition="right"
+            >
+              Add to cart
+            </Button>
+          </div>
+        </form>
       </Form>
       <AddToCartPopUp
         open={isPopUpOpen}
