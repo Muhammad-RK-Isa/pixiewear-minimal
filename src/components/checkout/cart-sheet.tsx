@@ -36,7 +36,7 @@ export function CartSheet() {
       <SheetTrigger asChild>
         <Button
           aria-label="Open cart"
-          variant="outline"
+          variant="ghost"
           size="icon"
           className="relative"
         >
@@ -48,7 +48,7 @@ export function CartSheet() {
               {itemCount}
             </Badge>
           )}
-          <ShoppingCartIcon className="size-4" aria-hidden="true" />
+          <ShoppingCartIcon strokeWidth={2.8} className="size-4" aria-hidden="true" />
         </Button>
       </SheetTrigger>
       <SheetContent className="flex w-full flex-col sm:max-w-lg">

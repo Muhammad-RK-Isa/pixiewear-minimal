@@ -1,8 +1,6 @@
-import { ImageIcon, ShoppingCartIcon } from "lucide-react";
+import { ImageIcon } from "lucide-react";
 import Image from "next/image";
 import type { AppRouterOutputs } from "~/server/api";
-import { Button } from "../ui/button";
-import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import Link from "next/link";
 
 interface ProductCardProps {
@@ -35,32 +33,10 @@ export function ProductCard({ product }: ProductCardProps) {
             <p className="font-medium">
               <span className="line-through text-muted-foreground">&#2547;{product.mrp}</span>
               &nbsp;
-              <span className="text-xl">&#2547;{product.price}</span>
+              <span className="text-xl text-pink-500">&#2547;{product.price}</span>
             </p>
           </div>
         </Link>
-        <div className="inline-flex items-center space-x-2 w-full">
-          <Button
-            size="sm"
-            className="flex-1"
-          >
-            Buy now
-          </Button>
-          <Tooltip delayDuration={150}>
-            <TooltipTrigger asChild>
-              <Button
-                size="icon"
-                variant="outline"
-                className="size-8"
-              >
-                <ShoppingCartIcon className="size-4" />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Add to cart</p>
-            </TooltipContent>
-          </Tooltip>
-        </div>
       </div>
     </div>
   )

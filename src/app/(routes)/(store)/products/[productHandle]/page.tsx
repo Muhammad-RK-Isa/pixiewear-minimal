@@ -55,7 +55,7 @@ export default async function ProductPage(props: { params: Promise<{ productHand
     '@context': 'https://schema.org',
     '@type': 'Product',
     name: product.title,
-    description: product.metaDescription,
+    description: product.description,
     image: product.images[0],
     offers: {
       '@type': 'AggregateOffer',
@@ -101,6 +101,7 @@ export default async function ProductPage(props: { params: Promise<{ productHand
                 <AddToCartForm product={product} />
               </React.Suspense>
             </div>
+            <p className='font-mono text-sm sm:text-base mt-4 text-muted-foreground'>{ product.description }</p>
           </div>
         </div>
       </div>
