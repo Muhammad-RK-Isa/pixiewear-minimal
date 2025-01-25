@@ -41,9 +41,9 @@ export function Gallery({ product }: ProductImageGalleryProps) {
   return (
     <Carousel
       orientation="horizontal"
-      className="flex flex-col gap-2 sm:gap-4 max-w-[100vw]"
+      className="flex flex-col gap-2 sm:gap-4 max-w-[calc(100vw-2rem)] mx-auto"
     >
-      <div className="relative border overflow-hidden aspect-square w-full h-max sm:rounded-md">
+      <div className="relative border overflow-hidden aspect-square w-full h-max rounded-md">
         <CarouselMainContainer>
           {product?.images.map((img, idx) => (
             <SliderMainItem key={idx} className="relative aspect-square">
@@ -73,13 +73,13 @@ function CarouselThumb({ product }: ProductImageGalleryProps) {
   const carousel = useCarousel()
 
   return (
-    <CarouselThumbsContainer className="basis-1/4 gap-2 sm:gap-4 mx-2 sm:mx-0">
+    <CarouselThumbsContainer className="basis-1/4 gap-2 sm:gap-4">
       {product?.images.map((img, idx) => (
         <SliderThumbItem
           key={idx}
           index={idx}
           className={cn(
-            "border overflow-hidden relative size-20 max-w-max cursor-pointer transition-all p-0 sm:rounded-md",
+            "border overflow-hidden relative size-20 max-w-max cursor-pointer transition-all p-0 rounded-md",
             carousel.activeIndex === idx ? "border-primary/50" : "border-border"
           )}
         >

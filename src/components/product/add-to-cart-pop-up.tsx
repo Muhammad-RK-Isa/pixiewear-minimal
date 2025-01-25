@@ -20,7 +20,7 @@ export function AddToCartPopUp({
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent>
         <div className="flex space-x-2 px-4 pt-4">
-          <div className="relative aspect-square size-14 grid place-content-center rounded-md overflow-hidden">
+          <div className="relative aspect-square w-20 grid place-content-center rounded-md overflow-hidden">
             {product.images[0] ? (
               <Image
                 src={product.images[0]}
@@ -33,8 +33,8 @@ export function AddToCartPopUp({
           </div>
           <div className="space-y-1 text-sm">
             <p className="font-medium">{product.title}</p>
-            <div className="inline-flex items-center gap-1 font-bold">
-              <CheckCircle2Icon className="size-4" />
+            <div className="inline-flex items-center gap-1 font-bold text-emerald-600">
+              <CheckCircle2Icon className="size-4 fill-emerald-500 stroke-primary-foreground" />
               Added to cart
             </div>
           </div>
