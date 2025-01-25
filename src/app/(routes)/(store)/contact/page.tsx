@@ -3,6 +3,8 @@ import { Facebook } from "~/components/icons/facebook";
 import { Messenger } from "~/components/icons/messenger";
 import { WhatsApp } from "~/components/icons/whatsapp";
 
+export const dynamic = "force-static";
+
 export default function ContactPage() {
   return (
     <div className="max-w-screen-xl mx-auto p-4 lg:px-0 w-full">

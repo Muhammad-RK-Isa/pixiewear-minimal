@@ -19,8 +19,8 @@ export async function generateMetadata(props: {
   const indexable = product.status === "published";
 
   return {
-    title: product.title,
-    description: product.metaDescription,
+    title: product.metaTitle ?? product.title,
+    description: product.metaDescription ?? product.description,
     robots: {
       index: indexable,
       follow: indexable,

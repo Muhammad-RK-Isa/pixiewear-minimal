@@ -1,3 +1,5 @@
+export const dynamic = "force-static";
+
 export default function ReturnsPage() {
   return (
     <div className="max-w-screen-xl mx-auto p-4 lg:px-0 w-full">
