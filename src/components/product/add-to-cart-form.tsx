@@ -163,12 +163,6 @@ export function AddToCartForm({ product }: AddToCartFormProps) {
               onClick={async () => {
                 setIsBuyingNow(true)
                 if (isAddedToCart) {
-                  await metaAddToCart({
-                    id: product.id,
-                    name: product.title,
-                    price: parseFloat(product.price),
-                    currency: "BDT",
-                  });
                   setIsBuyingNow(false);
                   router.push("/checkout");
                   return;
@@ -179,12 +173,6 @@ export function AddToCartForm({ product }: AddToCartFormProps) {
                 }, {
                   // eslint-disable-next-line @typescript-eslint/no-misused-promises
                   onSuccess: async () => {
-                    await metaAddToCart({
-                      id: product.id,
-                      name: product.title,
-                      price: parseFloat(product.price),
-                      currency: "BDT",
-                    });
                     await utils.cart.get.invalidate();
                     router.push("/checkout")
                   },
