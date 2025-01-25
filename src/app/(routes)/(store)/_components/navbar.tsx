@@ -22,7 +22,7 @@ export  function Navbar() {
           <TextShine
             duration={10}
             text="Pixiewear"
-            className="text-2xl uppercase font-bold transition-all mx-2.5 my-2 font-alenia"
+            className="text-2xl uppercase font-bold transition-all mx-2.5 lg:mx-0 my-2 font-alenia"
           />
         </Link>
       </div>

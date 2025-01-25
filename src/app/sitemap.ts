@@ -31,6 +31,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const routes = [
     "",
+    "/contact",
+    "/faq",
+    "/privacy",
+    "/returns",
+    "/shipping",
+    "/terms",
+    "/careers",
+    "/about",
   ].map((route) => ({
     url: `${env.NEXT_PUBLIC_APP_URL}${route}`,
     lastModified: new Date().toISOString(),

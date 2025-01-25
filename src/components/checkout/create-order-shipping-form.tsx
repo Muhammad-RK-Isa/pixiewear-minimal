@@ -123,10 +123,10 @@ export function CreateOrderShippingForm() {
                     <SelectValue
                       placeholder={
                         !state
-                          ? "Select state first"
+                          ? "Select division first"
                           : !city
                             ? "Select district first"
-                            : "Select town"
+                            : "Select area"
                       }
                     />
                   </SelectTrigger>

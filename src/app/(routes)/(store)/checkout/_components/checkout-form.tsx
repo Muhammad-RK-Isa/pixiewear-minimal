@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -18,6 +19,7 @@ import { metaCheckout } from "~/server/pixel/meta";
 import { api } from "~/trpc/react";
 import { DeliveryMethod } from "./delivery-method";
 import { PaymentMethod } from "./payment-method";
+import { Button } from "~/components/ui/button";
 
 interface CheckoutFormProps {
   cartLineItems: AppRouterOutputs["cart"]["get"]
@@ -128,7 +130,7 @@ export function CheckoutForm({ cartLineItems }: CheckoutFormProps) {
 
   const trpcUtils = api.useUtils()
 
-  
+
   React.useEffect(() => {
     const triggerInitiateCheckout = async () => {
       await trpcUtils.auth.session.fetch().then(async ({ user }) => {
@@ -153,6 +155,23 @@ export function CheckoutForm({ cartLineItems }: CheckoutFormProps) {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     triggerInitiateCheckout()
   }, [])
+
+  const isInitialRender = React.useRef(true);
+
+  React.useEffect(() => {
+    /**
+     * In the dev environment, the rendering happens twice.
+     * Hence, the logic becomes obsolete in the dev environment.
+     * But, it works perfectly in the prod. */
+    if (isInitialRender.current) {
+      isInitialRender.current = false;
+      return;
+    }
+
+    if (!isOTPVerificationModalOpen) {
+      form.setFocus("phone");
+    }
+  }, [isOTPVerificationModalOpen]);
 
   return (
     <>
@@ -179,7 +198,12 @@ export function CheckoutForm({ cartLineItems }: CheckoutFormProps) {
       </Form>
       <AlertDialog
         open={isOTPVerificationModalOpen}
-        onOpenChange={setIsOTPVerificationModalOpen}
+        onOpenChange={(isOpen) => {
+          setIsOTPVerificationModalOpen(isOpen);
+          if (!isOpen) {
+            form.setFocus("phone");
+          }
+        }}
       >
         <AlertDialogContent className="max-w-min">
           <AlertDialogHeader>
@@ -190,7 +214,7 @@ export function CheckoutForm({ cartLineItems }: CheckoutFormProps) {
               We have sent a verification code to your phone number. Please enter the code below to continue.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <div className="mx-auto mt-2">
+          <div className="mx-auto space-y-4">
             <InputOTP
               maxLength={6}
               onComplete={onOTPComplete}
@@ -227,6 +251,14 @@ export function CheckoutForm({ cartLineItems }: CheckoutFormProps) {
                 />
               </InputOTPGroup>
             </InputOTP>
+            <Button
+              size="lg"
+              variant="secondary"
+              className="w-full "
+              onClick={() => setIsOTPVerificationModalOpen(false)}
+            >
+              Edit phone number
+            </Button>
           </div>
         </AlertDialogContent>
       </AlertDialog>
