@@ -424,3 +424,7 @@ export const sha256Hash = (input: string): string => {
   const hash = sha256(data);
   return Buffer.from(hash).toString("hex");
 };
+
+export async function wait(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}

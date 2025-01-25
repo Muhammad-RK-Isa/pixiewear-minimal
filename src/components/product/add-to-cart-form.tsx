@@ -154,7 +154,7 @@ export function AddToCartForm({ product }: AddToCartFormProps) {
               <span className="sr-only">Add one item</span>
             </Button>
           </div>
-          <div className="space-y-2">
+          <div className="space-y-4">
             <Button
               type="button"
               aria-label="Buy now"

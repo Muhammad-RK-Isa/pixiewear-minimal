@@ -21,7 +21,7 @@ export function CreateOrderShippingForm() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-xl sm:text-2xl">
+        <CardTitle className="text-xl sm:text-2xl font-medium">
           Shipping
         </CardTitle>
       </CardHeader>

@@ -51,6 +51,10 @@ export function Gallery({ product }: ProductImageGalleryProps) {
                 src={img}
                 alt={`${product.title}-image-${idx + 1}`}
                 fill
+                key={idx}
+                role="group"
+                aria-roledescription="slide"
+                priority={idx === 0}
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 className="object-contain"
               />
@@ -69,7 +73,7 @@ function CarouselThumb({ product }: ProductImageGalleryProps) {
   const carousel = useCarousel()
 
   return (
-    <CarouselThumbsContainer className="basis-1/4 gap-2 sm:gap-4">
+    <CarouselThumbsContainer className="basis-1/4 gap-2 sm:gap-4 mx-2 sm:mx-0">
       {product?.images.map((img, idx) => (
         <SliderThumbItem
           key={idx}

@@ -5,7 +5,7 @@ import { buttonVariants } from "~/components/ui/button";
 
 export function Footer() {
   return (
-    <footer className="mt-auto border-t bg-muted/40">
+    <footer className="mt-auto border-t bg-muted/40 p-4 sm:p-0">
       <div className="px-4 pt-8 pb-4">
         <div className="grid grid-cols-2 gap-8 md:grid-cols-4 max-w-screen-xl mx-auto">
           {/* Company Info */}

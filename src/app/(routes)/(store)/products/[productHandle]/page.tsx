@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import React from 'react';
 import { AddToCartForm } from '~/components/product/add-to-cart-form';
 import { Gallery } from '~/components/product/gallery';
+import { Skeleton } from '~/components/ui/skeleton';
 import { api } from '~/trpc/server';
 
 
@@ -75,11 +76,11 @@ export default async function ProductPage(props: { params: Promise<{ productHand
         }}
       />
       <div className="mx-auto max-w-screen-xl">
-        <div className="grid lg:grid-cols-2 pb-6 sm:py-6 lg:py-12 gap-4 sm:gap-6 lg:gap-8">
+        <div className="grid lg:grid-cols-2 pb-4 sm:py-6 lg:py-12 gap-4 sm:gap-6">
           <div className="h-full w-full basis-full lg:basis-1/2">
             <React.Suspense
               fallback={
-                <div className="relative aspect-square h-full w-full overflow-hidden" />
+                <Skeleton className="relative aspect-square h-full w-full overflow-hidden" />
               }
             >
               <Gallery product={product} />

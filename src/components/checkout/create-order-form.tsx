@@ -19,7 +19,7 @@ export function CreateOrderForm() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-xl sm:text-2xl">
+        <CardTitle className="text-xl sm:text-2xl font-medium">
           Checkout details
         </CardTitle>
       </CardHeader>
