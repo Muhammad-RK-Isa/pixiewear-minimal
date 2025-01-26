@@ -99,7 +99,7 @@ export function UpdateCart({ cartLineItem }: UpdateCartProps) {
                       type="number"
                       className="h-8 w-14 rounded-none border-none text-center"
                       onBlur={async () => {
-                        if (watchedQuantity === cartLineItem.quantity) return
+                        if (Number(watchedQuantity) === cartLineItem.quantity) return
                         await mutateAsync({
                           productId: cartLineItem.id,
                           quantity: watchedQuantity,
@@ -126,7 +126,7 @@ export function UpdateCart({ cartLineItem }: UpdateCartProps) {
                 }, {
                   onSuccess: () => {
                     setIsIncreasing(false)
-                    form.setValue("quantity", watchedQuantity + 1)
+                    form.setValue("quantity", Number(watchedQuantity) + 1)
                   }
                 })
               }}

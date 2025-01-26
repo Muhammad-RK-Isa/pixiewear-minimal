@@ -3,8 +3,8 @@ import { notFound } from 'next/navigation';
 import React from 'react';
 import { AddToCartForm } from '~/components/product/add-to-cart-form';
 import { Gallery } from '~/components/product/gallery';
-import { Skeleton } from '~/components/ui/skeleton';
 import { api } from '~/trpc/server';
+import { GallerySkeleton } from './_components/gallery-skeleton';
 
 export async function generateMetadata(props: {
   params: Promise<{ productHandle: string }>;
@@ -77,9 +77,7 @@ export default async function ProductPage(props: { params: Promise<{ productHand
         <div className="grid lg:grid-cols-2 py-4 sm:py-6 lg:py-12 gap-4 sm:gap-6">
           <div className="h-full w-full basis-full lg:basis-1/2">
             <React.Suspense
-              fallback={
-                <Skeleton className="relative aspect-square h-full w-full overflow-hidden" />
-              }
+              fallback={<GallerySkeleton />}
             >
               <Gallery product={product} />
             </React.Suspense>
@@ -99,7 +97,7 @@ export default async function ProductPage(props: { params: Promise<{ productHand
                 <AddToCartForm product={product} />
               </React.Suspense>
             </div>
-            <p className='font-mono text-sm sm:text-base mt-4 text-muted-foreground'>{ product.description }</p>
+            <p className='font-mono text-sm sm:text-base mt-4 text-muted-foreground'>{product.description}</p>
           </div>
         </div>
       </div>

@@ -6,12 +6,14 @@ import { ScrollArea } from "~/components/ui/scroll-area"
 import type { AppRouterOutputs } from "~/server/api"
 import { ImageIcon } from "lucide-react"
 import { UpdateCart } from "./update-cart"
+import Link from "next/link"
 
 interface CartLineItemsProps extends React.ComponentProps<"div"> {
   items: AppRouterOutputs["cart"]["get"]
   isScrollable?: boolean
   isEditable?: boolean
   variant?: "default" | "minimal"
+  onSheetClose?: () => void
 }
 
 export function CartLineItems({
@@ -20,6 +22,7 @@ export function CartLineItems({
   isEditable = true,
   variant = "default",
   className,
+  onSheetClose,
   ...props
 }: CartLineItemsProps) {
   const Comp = isScrollable ? ScrollArea : Slot
@@ -43,37 +46,43 @@ export function CartLineItems({
             >
               <div className="flex items-center space-x-4">
                 {variant === "default" ? (
-                  <div className={cn(
-                    "relative aspect-square min-w-fit overflow-hidden rounded",
-                    isEditable ? "size-16": "size-12"
-                  )}>
-                    {item?.images?.length ? (
-                      <Image
-                        src={
-                          item.images[0] ??
-                          "/images/product-placeholder.webp"
-                        }
-                        alt={`${item.title} product image`}
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        fill
-                        className="absolute object-cover"
-                        loading="lazy"
-                      />
-                    ) : (
-                      <div className="flex h-full items-center justify-center bg-secondary">
-                        <ImageIcon
-                          className="size-4 text-muted-foreground"
-                          aria-hidden="true"
+                  <Link href={`/products/${item.handle}`} onClick={onSheetClose}>
+                    <div className={cn(
+                      "relative aspect-square min-w-fit overflow-hidden rounded",
+                      isEditable ? "size-16" : "size-12"
+                    )}>
+                      {item?.images?.length ? (
+                        <Image
+                          src={
+                            item.images[0] ??
+                            "/images/product-placeholder.webp"
+                          }
+                          alt={`${item.title} product image`}
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                          fill
+                          className="absolute object-cover"
+                          loading="lazy"
                         />
-                      </div>
-                    )}
-                  </div>
+                      ) : (
+                        <div className="flex h-full items-center justify-center bg-secondary">
+                          <ImageIcon
+                            className="size-4 text-muted-foreground"
+                            aria-hidden="true"
+                          />
+                        </div>
+                      )}
+                    </div>
+                  </Link>
                 ) : null}
                 <div className="flex flex-col space-y-1 self-start">
-                  
-                  <span className="line-clamp-1 text-sm font-medium">
-                    {item.title}
-                  </span>
+                  <Link
+                    href={`/products/${item.handle}`}
+                    onClick={onSheetClose}
+                  >
+                    <span className="line-clamp-1 text-sm font-medium hover:underline underline-offset-2">
+                      {item.title}
+                    </span>
+                  </Link>
                   {isEditable ? (
                     <span className="line-clamp-1 text-xs text-muted-foreground">
                       {item.price} x {item.quantity} ={" "}
@@ -87,7 +96,7 @@ export function CartLineItems({
                 </div>
               </div>
               {isEditable ? (
-                <UpdateCart cartLineItem={item}/>
+                <UpdateCart cartLineItem={item} />
               ) : (
                 <div className="flex flex-col space-y-1 font-medium">
                   <span className="ml-auto line-clamp-1 text-sm">

@@ -17,8 +17,11 @@ import {
 import { CartLineItems } from "~/components/checkout/cart-line-items"
 import { api } from "~/trpc/react"
 import { ShoppingCartIcon } from "lucide-react"
+import React from "react";
 
 export function CartSheet() {
+  const [open, setOpen] = React.useState(false)
+
   const { data: cartLineItems } = api.cart.get.useQuery();
 
   const itemCount = cartLineItems?.reduce(
@@ -32,7 +35,7 @@ export function CartSheet() {
   ) ?? 0
 
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
         <Button
           aria-label="Open cart"
@@ -58,7 +61,11 @@ export function CartSheet() {
         </SheetHeader>
         {itemCount > 0 ? (
           <>
-            <CartLineItems items={cartLineItems ?? []} className="flex-1" />
+            <CartLineItems
+              items={cartLineItems ?? []}
+              className="flex-1"
+              onSheetClose={() => setOpen(false)}
+            />
             <div className="space-y-4">
               <Separator />
               <div className="space-y-1.5 text-sm">
