@@ -1,20 +1,18 @@
+import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import React from "react";
+import { env } from "~/env";
 import { api, HydrateClient } from "~/trpc/server";
 import { CheckoutForm } from "./_components/checkout-form";
-import type { Metadata } from "next";
-import { env } from "~/env";
-import { redirect } from "next/navigation";
-
-export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
   title: "Checkout",
-  description: "Checkout with your selected products"
-}
+  description: "Checkout with your selected products",
+};
 
 export default async function Checkout() {
-  void await api.cart.get.prefetch();
+  await api.cart.get.prefetch();
 
   const cartLineItems = await api.cart.get();
 
@@ -25,8 +23,10 @@ export default async function Checkout() {
   return (
     <main>
       <HydrateClient>
-        <CheckoutForm cartLineItems={cartLineItems} />
+        <React.Suspense fallback={<div>Loading...</div>}>
+          <CheckoutForm cartLineItems={cartLineItems} />
+        </React.Suspense>
       </HydrateClient>
     </main>
-  )
+  );
 }

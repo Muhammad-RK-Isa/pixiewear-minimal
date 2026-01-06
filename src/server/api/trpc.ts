@@ -44,7 +44,7 @@ export const createTRPCRouter = t.router;
 export const publicProcedure = t.procedure;
 
 export const protectedProcedure = t.procedure.use(async ({ ctx, next }) => {
-  if (!ctx.user && !ctx.session) {
+  if (!(ctx.user || ctx.session)) {
     throw new TRPCError({
       code: "UNAUTHORIZED",
       message: "You are unauthenticated",
@@ -56,8 +56,8 @@ export const protectedProcedure = t.procedure.use(async ({ ctx, next }) => {
       user: ctx.user!,
       session: ctx.session!,
     },
-  })
-})
+  });
+});
 
 export const adminProcedure = protectedProcedure.use(async ({ ctx, next }) => {
   if (ctx.user.role !== "admin") {
@@ -67,11 +67,11 @@ export const adminProcedure = protectedProcedure.use(async ({ ctx, next }) => {
     });
   }
   return next();
-})
+});
 
 export type TRPCContext = Awaited<ReturnType<typeof createTRPCContext>>;
 export type ProtectedContext = TRPCContext & {
   user: NonNullable<TRPCContext["user"]>;
   session: NonNullable<TRPCContext["session"]>;
 };
-export type AdminContext = ProtectedContext
+export type AdminContext = ProtectedContext;

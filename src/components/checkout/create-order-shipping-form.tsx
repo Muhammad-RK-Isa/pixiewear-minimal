@@ -1,17 +1,29 @@
 "use client";
 
-import { FormControl, FormField, FormInput, FormItem, FormLabel, FormMessage } from "../ui/form";
 import { useFormContext } from "react-hook-form";
-import type { CreateOrderSchemaType } from "~/lib/validators";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
-import towns from "~/lib/towns.json";
 import cities from "~/lib/cities.json";
 import states from "~/lib/states.json";
-import React from "react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import towns from "~/lib/towns.json";
+import type { CreateOrderSchemaType } from "~/lib/validators";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import {
+  FormControl,
+  FormField,
+  FormInput,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "../ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 
 export function CreateOrderShippingForm() {
-  const form = useFormContext<CreateOrderSchemaType>()
+  const form = useFormContext<CreateOrderSchemaType>();
 
   const { state, city } = form.watch();
 
@@ -21,14 +33,14 @@ export function CreateOrderShippingForm() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-xl sm:text-2xl font-medium">
+        <CardTitle className="font-medium text-xl sm:text-2xl">
           Shipping
         </CardTitle>
       </CardHeader>
-      <CardContent className="grid md:grid-cols-2 gap-4">
+      <CardContent className="grid gap-4 md:grid-cols-2">
         <FormField
-          name="street"
           control={form.control}
+          name="street"
           render={({ field }) => (
             <FormItem className="lg:col-span-2">
               <FormLabel>Street/Village</FormLabel>
@@ -40,8 +52,8 @@ export function CreateOrderShippingForm() {
           )}
         />
         <FormField
-          name="state"
           control={form.control}
+          name="state"
           render={({ field }) => (
             <FormItem>
               <FormLabel>State/Division</FormLabel>
@@ -55,17 +67,14 @@ export function CreateOrderShippingForm() {
               >
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue
-                      placeholder="Select state/division"
-                    />
+                    <SelectValue placeholder="Select state/division" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
                   {states.map((state) => (
-                    <SelectItem
-                      key={state}
-                      value={state}
-                    >{state}</SelectItem>
+                    <SelectItem key={state} value={state}>
+                      {state}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -73,14 +82,14 @@ export function CreateOrderShippingForm() {
           )}
         />
         <FormField
-          name="city"
           control={form.control}
+          name="city"
           render={({ field }) => (
             <FormItem>
               <FormLabel>City/District</FormLabel>
               <Select
-                disabled={!state}
                 defaultValue={field.value}
+                disabled={!state}
                 onValueChange={(v) => {
                   field.onChange(v);
                   form.setValue("town", "");
@@ -90,17 +99,16 @@ export function CreateOrderShippingForm() {
                   <SelectTrigger>
                     <SelectValue
                       placeholder={
-                        !state ? "Select division first" : "Select city"
+                        state ? "Select city" : "Select division first"
                       }
                     />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
                   {selectableCities.map((city) => (
-                    <SelectItem
-                      key={city}
-                      value={city}
-                    >{city}</SelectItem>
+                    <SelectItem key={city} value={city}>
+                      {city}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -108,35 +116,34 @@ export function CreateOrderShippingForm() {
           )}
         />
         <FormField
-          name="town"
           control={form.control}
+          name="town"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Upozila/Thana/Area</FormLabel>
               <Select
                 defaultValue={field.value}
+                disabled={!(state && city)}
                 onValueChange={field.onChange}
-                disabled={!state || !city}
               >
                 <FormControl>
                   <SelectTrigger>
                     <SelectValue
                       placeholder={
-                        !state
-                          ? "Select division first"
-                          : !city
-                            ? "Select district first"
-                            : "Select area"
+                        state
+                          ? city
+                            ? "Select area"
+                            : "Select district first"
+                          : "Select division first"
                       }
                     />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
                   {selectableTowns.map((town) => (
-                    <SelectItem
-                      key={town}
-                      value={town}
-                    >{town}</SelectItem>
+                    <SelectItem key={town} value={town}>
+                      {town}
+                    </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
@@ -144,8 +151,8 @@ export function CreateOrderShippingForm() {
           )}
         />
         <FormField
-          name="postCode"
           control={form.control}
+          name="postCode"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Post/Zip code</FormLabel>
@@ -158,5 +165,5 @@ export function CreateOrderShippingForm() {
         />
       </CardContent>
     </Card>
-  )
+  );
 }

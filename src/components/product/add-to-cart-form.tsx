@@ -1,12 +1,13 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { useRouter } from "next/navigation"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { toast } from "sonner"
-
-import { Button } from "~/components/ui/button"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { MinusIcon, PlusIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import React from "react";
+import { useForm, useWatch } from "react-hook-form";
+import { toast } from "sonner";
+import { useMediaQuery } from "usehooks-ts";
+import { Button } from "~/components/ui/button";
 import {
   Form,
   FormControl,
@@ -14,28 +15,26 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "~/components/ui/form"
-import { Input } from "~/components/ui/input"
-import type { UpdateCartItemSchemaType } from "~/lib/validators"
-import { updateCartItemSchema } from "~/lib/validators"
-import { MinusIcon, PlusIcon } from "lucide-react"
-import { api } from "~/trpc/react"
-import { AddToCartPopUp } from "./add-to-cart-pop-up"
-import type { AppRouterOutputs } from "~/server/api"
-import { useMediaQuery } from "usehooks-ts"
-import { metaAddToCart } from "~/server/pixel/meta"
+} from "~/components/ui/form";
+import { Input } from "~/components/ui/input";
+import type { UpdateCartItemSchemaType } from "~/lib/validators";
+import { updateCartItemSchema } from "~/lib/validators";
+import type { AppRouterOutputs } from "~/server/api";
+import { metaAddToCart } from "~/server/pixel/meta";
+import { api } from "~/trpc/react";
+import { AddToCartPopUp } from "./add-to-cart-pop-up";
 
 interface AddToCartFormProps {
-  product: NonNullable<AppRouterOutputs["product"]["getByHandle"]>
+  product: NonNullable<AppRouterOutputs["product"]["getByHandle"]>;
 }
 
 export function AddToCartForm({ product }: AddToCartFormProps) {
-  const id = React.useId()
-  const router = useRouter()
-  const [isBuyingNow, setIsBuyingNow] = React.useState(false)
-  const [isAddingToCart, setIsAddingToCart] = React.useState(false)
-  const [isPopUpOpen, setIsPopUpOpen] = React.useState(false)
-  const isDesktop = useMediaQuery("(min-width: 1079px)")
+  const id = React.useId();
+  const router = useRouter();
+  const [isBuyingNow, setIsBuyingNow] = React.useState(false);
+  const [isAddingToCart, setIsAddingToCart] = React.useState(false);
+  const [isPopUpOpen, setIsPopUpOpen] = React.useState(false);
+  const isDesktop = useMediaQuery("(min-width: 1079px)");
 
   const form = useForm<UpdateCartItemSchemaType>({
     resolver: zodResolver(updateCartItemSchema),
@@ -43,81 +42,81 @@ export function AddToCartForm({ product }: AddToCartFormProps) {
       quantity: 1,
       productId: product.id,
     },
-  })
+  });
 
-  const utils = api.useUtils()
+  const utils = api.useUtils();
 
-  const { mutateAsync: addToCartAsync, isPending } = api.cart.addItem.useMutation({
-    onSuccess: async () => {
-      await metaAddToCart({
-        id: product.id,
-        name: product.title,
-        price: parseFloat(product.price),
-        currency: "BDT",
-      });
-    }
-  })
+  const { mutateAsync: addToCartAsync, isPending } =
+    api.cart.addItem.useMutation({
+      onSuccess: async () => {
+        await metaAddToCart({
+          id: product.id,
+          name: product.title,
+          price: Number.parseFloat(product.price),
+          currency: "BDT",
+        });
+      },
+    });
 
   async function onSubmit(data: UpdateCartItemSchemaType) {
-    setIsAddingToCart(true)
+    setIsAddingToCart(true);
     await addToCartAsync(data, {
       // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onSuccess: async () => {
-        await utils.cart.get.invalidate()
+        await utils.cart.get.invalidate();
         if (isDesktop) {
           toast.message("Product added to cart", {
             action: (
               <button
-                className="rounded-lg border p-1.5 ml-auto bg-accent/50 text-xs"
+                className="ml-auto rounded-lg border bg-accent/50 p-1.5 text-xs"
                 onClick={() => {
                   router.push("/cart");
-                  toast.dismiss()
+                  toast.dismiss();
                 }}
               >
                 View Cart
               </button>
             ),
-          })
-          return
+          });
+          return;
         }
-        setIsPopUpOpen(true)
+        setIsPopUpOpen(true);
       },
       onError: (err) => {
-        toast.error(err.message)
+        toast.error(err.message);
       },
       onSettled: () => {
-        setIsAddingToCart(false)
-      }
+        setIsAddingToCart(false);
+      },
     });
   }
 
-  const { data: cartLineItems } = api.cart.get.useQuery()
-  
-  const isAddedToCart = !!cartLineItems?.find((item) => item.id === product.id)
+  const { data: cartLineItems } = api.cart.get.useQuery();
+
+  const isAddedToCart = !!cartLineItems?.find((item) => item.id === product.id);
+
+  const quantity = useWatch({ control: form.control, name: "quantity" });
 
   return (
     <>
       <Form {...form}>
-        <form
-          className="space-y-4"
-          onSubmit={form.handleSubmit(onSubmit)}
-        >
-          <div className="flex items-center divide-x rounded-md border w-max gap-px">
+        <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
+          <div className="flex w-max items-center gap-px divide-x rounded-md border">
             <Button
-              id={`${id}-decrement`}
-              type="button"
-              variant="ghost"
-              size="icon"
               className="size-10 shrink-0 rounded-r-none"
+              disabled={isAddingToCart || quantity <= 1}
+              id={`${id}-decrement`}
               onClick={() =>
                 form.setValue(
                   "quantity",
-                  Math.max(0, form.getValues("quantity") - 1)
+                  Math.max(1, form.getValues("quantity") - 1)
                 )
               }
-              disabled={isAddingToCart}
+              size="icon"
+              type="button"
+              variant="ghost"
             >
-              <MinusIcon className="size-4" aria-hidden="true" />
+              <MinusIcon aria-hidden="true" className="size-4" />
               <span className="sr-only">Remove one item</span>
             </Button>
             <FormField
@@ -128,9 +127,9 @@ export function AddToCartForm({ product }: AddToCartFormProps) {
                   <FormLabel className="sr-only">Quantity</FormLabel>
                   <FormControl>
                     <Input
-                      type="number"
-                      inputMode="numeric"
                       className="h-10 w-16 rounded-none border-none text-center"
+                      inputMode="numeric"
+                      type="number"
                       {...field}
                       onChange={field.onChange}
                     />
@@ -140,67 +139,70 @@ export function AddToCartForm({ product }: AddToCartFormProps) {
               )}
             />
             <Button
-              id={`${id}-increment`}
-              type="button"
-              variant="ghost"
-              size="icon"
               className="size-10 shrink-0 rounded-l-none"
+              disabled={isAddingToCart}
+              id={`${id}-increment`}
               onClick={() =>
                 form.setValue("quantity", form.getValues("quantity") + 1)
               }
-              disabled={isAddingToCart}
+              size="icon"
+              type="button"
+              variant="ghost"
             >
-              <PlusIcon className="size-3" aria-hidden="true" />
+              <PlusIcon aria-hidden="true" className="size-3" />
               <span className="sr-only">Add one item</span>
             </Button>
           </div>
           <div className="space-y-4">
             <Button
-              type="button"
               aria-label="Buy now"
-              size="lg"
-              className="w-full h-12"
+              className="h-12 w-full"
+              disabled={isBuyingNow || isPending}
+              iconPosition="right"
+              loader="dots"
+              loading={isBuyingNow}
               onClick={async () => {
-                setIsBuyingNow(true)
+                setIsBuyingNow(true);
                 if (isAddedToCart) {
                   setIsBuyingNow(false);
                   router.push("/checkout");
                   return;
                 }
-                await addToCartAsync({
-                  productId: product.id,
-                  quantity: form.getValues("quantity"),
-                }, {
-                  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                  onSuccess: async () => {
-                    await utils.cart.get.invalidate();
-                    router.push("/checkout")
+                await addToCartAsync(
+                  {
+                    productId: product.id,
+                    quantity: form.getValues("quantity"),
                   },
-                  onError: (err) => {
-                    toast.error(err.message)
-                  },
-                  onSettled: () => {
-                    setIsBuyingNow(false)
+                  {
+                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                    onSuccess: async () => {
+                      await utils.cart.get.invalidate();
+                      router.push("/checkout");
+                    },
+                    onError: (err) => {
+                      toast.error(err.message);
+                    },
+                    onSettled: () => {
+                      setIsBuyingNow(false);
+                    },
                   }
-                })
+                );
               }}
-              disabled={isBuyingNow || isPending}
-              loader="dots"
-              iconPosition="right"
-              loading={isBuyingNow}
+              size="lg"
+              type="button"
             >
               Buy now
             </Button>
             <Button
               aria-label="Add to cart"
+              className="h-12 w-full"
+              disabled={isAddingToCart || isPending}
+              iconPosition="right"
+              loader="dots"
+              loading={isAddingToCart}
+              size="lg"
               type="submit"
               variant="outline"
-              size="lg"
-              className="w-full h-12"
-              disabled={isAddingToCart || isPending}
-              loading={isAddingToCart}
-              loader="dots"
-              iconPosition="right"
             >
               Add to cart
             </Button>
@@ -208,10 +210,10 @@ export function AddToCartForm({ product }: AddToCartFormProps) {
         </form>
       </Form>
       <AddToCartPopUp
-        open={isPopUpOpen}
         onOpenChange={setIsPopUpOpen}
+        open={isPopUpOpen}
         product={product}
       />
     </>
-  )
+  );
 }

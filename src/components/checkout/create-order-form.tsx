@@ -2,31 +2,31 @@ import { useFormContext } from "react-hook-form";
 import * as RPNInput from "react-phone-number-input";
 import { cn } from "~/lib/utils";
 import type { CreateOrderSchemaType } from "~/lib/validators";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import {
   FormControl,
   FormField,
   FormInput,
   FormItem,
   FormLabel,
-  FormMessage
+  FormMessage,
 } from "../ui/form";
 import { Input } from "../ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 
 export function CreateOrderForm() {
-  const form = useFormContext<CreateOrderSchemaType>()
+  const form = useFormContext<CreateOrderSchemaType>();
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-xl sm:text-2xl font-medium">
+        <CardTitle className="font-medium text-xl sm:text-2xl">
           Checkout details
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <FormField
-          name="name"
           control={form.control}
+          name="name"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Name</FormLabel>
@@ -38,25 +38,24 @@ export function CreateOrderForm() {
           )}
         />
         <FormField
-          name="email"
           control={form.control}
+          name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email&nbsp;<span className="text-muted-foreground">(optional)</span></FormLabel>
+              <FormLabel>
+                Email&nbsp;
+                <span className="text-muted-foreground">(optional)</span>
+              </FormLabel>
               <FormControl>
-                <FormInput
-                  type="email"
-                  inputMode="email"
-                  {...field}
-                />
+                <FormInput inputMode="email" type="email" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
         <FormField
-          name="phone"
           control={form.control}
+          name="phone"
           render={({ field, fieldState }) => (
             <FormItem>
               <FormLabel>Phone</FormLabel>
@@ -64,20 +63,20 @@ export function CreateOrderForm() {
                 <RPNInput.default
                   {...field}
                   className="flex h-10 rounded-lg tracking-wider shadow-sm placeholder:tracking-wider"
+                  countries={["BD"]}
+                  countrySelectProps={{ className: "hidden" }}
+                  defaultCountry="BD"
+                  inputComponent={Input}
+                  international={false}
                   numberInputProps={{
                     className: cn(
                       "h-10",
                       fieldState.error
                         ? "border-destructive hover:border-destructive hover:focus-within:border-destructive focus-visible:border-destructive focus-visible:ring-destructive"
-                        : "",
+                        : ""
                     ),
                   }}
-                  inputComponent={Input}
                   placeholder="01XXX-XXXXXX"
-                  countrySelectProps={{ className: "hidden" }}
-                  international={false}
-                  countries={["BD"]}
-                  defaultCountry="BD"
                 />
               </FormControl>
               <FormMessage />
@@ -86,5 +85,5 @@ export function CreateOrderForm() {
         />
       </CardContent>
     </Card>
-  )
+  );
 }

@@ -1,12 +1,11 @@
 import "~/styles/globals.css";
 
-import type { Viewport, Metadata } from "next";
-
+import type { Metadata, Viewport } from "next";
+import { siteConfig } from "~/config/site";
+import { env } from "~/env";
+import { alenia, fontMono, fontSans } from "~/lib/fonts";
 import { cn } from "~/lib/utils";
 import Providers from "~/providers";
-import { fontMono, fontSans, alenia } from "~/lib/fonts";
-import { env } from "~/env";
-import { siteConfig } from "~/config/site";
 
 export const metadata: Metadata = {
   metadataBase: new URL(env.NEXT_PUBLIC_APP_URL),
@@ -27,11 +26,11 @@ export const metadata: Metadata = {
     {
       name: "Pixiewear",
       url: "https://www.pixiewear.store",
-    }
+    },
   ],
   creator: "muhammad-rk-isa",
   openGraph: {
-    type: "website", 
+    type: "website",
     locale: "en_US",
     url: siteConfig.url,
     title: siteConfig.name,
@@ -50,26 +49,24 @@ export const viewport: Viewport = {
     { media: "(prefers-color-scheme: light)", color: "white" },
     { media: "(prefers-color-scheme: dark)", color: "black" },
   ],
-}
+};
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html
-      lang="en"
       className={cn(
         fontSans.variable,
         fontMono.variable,
         alenia.variable,
-        "antialiased scroll-smooth"
+        "scroll-smooth antialiased"
       )}
+      lang="en"
       suppressHydrationWarning
     >
-      <body className="font-sans bg-background text-foreground">
-        <Providers>
-          {children}
-        </Providers>
+      <body className="bg-background font-sans text-foreground">
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

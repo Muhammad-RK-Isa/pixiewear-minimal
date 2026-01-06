@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -10,25 +9,39 @@ import { CheckoutItemsSummary } from "~/components/checkout/checkout-items-summa
 import { CreateOrderForm } from "~/components/checkout/create-order-form";
 import { CreateOrderShippingForm } from "~/components/checkout/create-order-shipping-form";
 import { OrderSummaryCard } from "~/components/checkout/order-summary-card";
-import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogHeader, AlertDialogTitle } from "~/components/ui/alert-dialog";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "~/components/ui/alert-dialog";
+import { Button } from "~/components/ui/button";
 import { Form } from "~/components/ui/form";
-import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "~/components/ui/input-otp";
-import { createOrderSchema, type CreateOrderSchemaType } from "~/lib/validators";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSeparator,
+  InputOTPSlot,
+} from "~/components/ui/input-otp";
+import {
+  type CreateOrderSchemaType,
+  createOrderSchema,
+} from "~/lib/validators";
 import type { AppRouterOutputs } from "~/server/api";
 import { metaCheckout } from "~/server/pixel/meta";
 import { api } from "~/trpc/react";
 import { DeliveryMethod } from "./delivery-method";
 import { PaymentMethod } from "./payment-method";
-import { Button } from "~/components/ui/button";
 
 interface CheckoutFormProps {
-  cartLineItems: AppRouterOutputs["cart"]["get"]
+  cartLineItems: AppRouterOutputs["cart"]["get"];
 }
 
 export function CheckoutForm({ cartLineItems }: CheckoutFormProps) {
-
   const router = useRouter();
-  const [isOTPVerificationModalOpen, setIsOTPVerificationModalOpen] = React.useState(false)
+  const [isOTPVerificationModalOpen, setIsOTPVerificationModalOpen] =
+    React.useState(false);
 
   const form = useForm<CreateOrderSchemaType>({
     defaultValues: {
@@ -48,65 +61,73 @@ export function CheckoutForm({ cartLineItems }: CheckoutFormProps) {
       })),
     },
     resolver: zodResolver(createOrderSchema),
-  })
+  });
 
-  const { mutateAsync: sendVerificationCodeSync, isPending: isSendingVerificationCode } = api.auth.sendVerificationCode.useMutation({
+  const {
+    mutateAsync: sendVerificationCodeSync,
+    isPending: isSendingVerificationCode,
+  } = api.auth.sendVerificationCode.useMutation({
     onSuccess: () => {
-      setIsOTPVerificationModalOpen(false)
+      setIsOTPVerificationModalOpen(false);
     },
     onError: (err) => {
-      toast.error(err.message)
-    }
-  })
-  const { mutateAsync: signInSync, isPending: isSigningIn } = api.auth.signIn.useMutation({
-    onSuccess: () => {
-      setIsOTPVerificationModalOpen(false)
+      toast.error(err.message);
     },
-    onError: (err) => {
-      toast.error(err.message)
-    }
-  })
+  });
+  const { mutateAsync: signInSync, isPending: isSigningIn } =
+    api.auth.signIn.useMutation({
+      onSuccess: () => {
+        setIsOTPVerificationModalOpen(false);
+      },
+      onError: (err) => {
+        toast.error(err.message);
+      },
+    });
 
-  const { mutate: createOrder, error: orderError } = api.order.create.useMutation({
-    onSuccess: async (data) => {
-      await metaCheckout({
-        products: cartLineItems.map((itm) => ({
-          id: itm.id,
-          quantity: itm.quantity,
-        })),
-        total_price: cartLineItems.reduce((acc, itm) => acc + itm.price, 0),
-        user: {
-          email: form.getValues("email"),
-          phone: form.getValues("phone"),
-          firstName: form.getValues("name").split(" ")[0] ?? "",
-          lastName: form.getValues("name").split(" ")[1],
-          city: form.getValues("city"),
-          state: form.getValues("state"),
-          country: form.getValues("country"),
-          zipCode: form.getValues("postCode"),
-        },
-        eventName: "Purchase",
-      })
-      router.push(`/thank-you?orderId=${data.orderId}`)
-    },
-    onError: async (err) => {
-      if (err.data?.code === "UNAUTHORIZED") {
-        await sendVerificationCodeSync({
-          phone: form.getValues("phone"),
-        }, {
-          onSuccess: () => {
-            setIsOTPVerificationModalOpen(true);
-          }
-        })
-        return;
-      }
-      toast.error(err.message)
-    }
-  })
+  const { mutate: createOrder, error: orderError } =
+    api.order.create.useMutation({
+      onSuccess: async (data) => {
+        await metaCheckout({
+          products: cartLineItems.map((itm) => ({
+            id: itm.id,
+            quantity: itm.quantity,
+          })),
+          total_price: cartLineItems.reduce((acc, itm) => acc + itm.price, 0),
+          user: {
+            email: form.getValues("email"),
+            phone: form.getValues("phone"),
+            firstName: form.getValues("name").split(" ")[0] ?? "",
+            lastName: form.getValues("name").split(" ")[1],
+            city: form.getValues("city"),
+            state: form.getValues("state"),
+            country: form.getValues("country"),
+            zipCode: form.getValues("postCode"),
+          },
+          eventName: "Purchase",
+        });
+        router.push(`/thank-you?orderId=${data.orderId}`);
+      },
+      onError: async (err) => {
+        if (err.data?.code === "UNAUTHORIZED") {
+          await sendVerificationCodeSync(
+            {
+              phone: form.getValues("phone"),
+            },
+            {
+              onSuccess: () => {
+                setIsOTPVerificationModalOpen(true);
+              },
+            }
+          );
+          return;
+        }
+        toast.error(err.message);
+      },
+    });
 
   const handleSubmit = form.handleSubmit((data) => {
     createOrder(data);
-  })
+  });
 
   async function onOTPComplete(v: string) {
     if (orderError?.data?.code === "UNAUTHORIZED") {
@@ -114,22 +135,24 @@ export function CheckoutForm({ cartLineItems }: CheckoutFormProps) {
         createOrder({
           ...form.getValues(),
           verificationCode: v,
-        })
+        });
         return;
       }
-      await signInSync({
-        phone: form.getValues("phone"),
-        verificationCode: v,
-      }, {
-        onSuccess: () => {
-          createOrder(form.getValues())
+      await signInSync(
+        {
+          phone: form.getValues("phone"),
+          verificationCode: v,
+        },
+        {
+          onSuccess: () => {
+            createOrder(form.getValues());
+          },
         }
-      })
+      );
     }
   }
 
-  const trpcUtils = api.useUtils()
-
+  const trpcUtils = api.useUtils();
 
   React.useEffect(() => {
     const triggerInitiateCheckout = async () => {
@@ -148,13 +171,12 @@ export function CheckoutForm({ cartLineItems }: CheckoutFormProps) {
             country: "Bangladesh",
           },
           eventName: "InitiateCheckout",
-        })
-      }
-      )
-    }
+        });
+      });
+    };
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    triggerInitiateCheckout()
-  }, [])
+    triggerInitiateCheckout();
+  }, []);
 
   const isInitialRender = React.useRef(true);
 
@@ -177,15 +199,13 @@ export function CheckoutForm({ cartLineItems }: CheckoutFormProps) {
     <>
       <Form {...form}>
         <form
+          className="mx-auto grid max-w-screen-xl gap-4 p-4 lg:grid-cols-3 lg:px-0"
           onSubmit={handleSubmit}
-          className="p-4 lg:px-0 grid lg:grid-cols-3 max-w-screen-xl mx-auto gap-4"
         >
-          <div
-            className="space-y-4 lg:col-span-2 h-max"
-          >
+          <div className="h-max space-y-4 lg:col-span-2">
             <CreateOrderForm />
             <CreateOrderShippingForm />
-            <div className="grid sm:grid-cols-2 gap-4">
+            <div className="grid gap-4 sm:grid-cols-2">
               <PaymentMethod />
               <DeliveryMethod />
             </div>
@@ -197,13 +217,13 @@ export function CheckoutForm({ cartLineItems }: CheckoutFormProps) {
         </form>
       </Form>
       <AlertDialog
-        open={isOTPVerificationModalOpen}
         onOpenChange={(isOpen) => {
           setIsOTPVerificationModalOpen(isOpen);
           if (!isOpen) {
             form.setFocus("phone");
           }
         }}
+        open={isOTPVerificationModalOpen}
       >
         <AlertDialogContent className="max-w-min">
           <AlertDialogHeader>
@@ -211,51 +231,34 @@ export function CheckoutForm({ cartLineItems }: CheckoutFormProps) {
               Verify your phone number
             </AlertDialogTitle>
             <AlertDialogDescription className="text-center">
-              We have sent a verification code to your phone number. Please enter the code below to continue.
+              We have sent a verification code to your phone number. Please
+              enter the code below to continue.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <div className="mx-auto space-y-4">
             <InputOTP
+              className="text-lg"
+              disabled={isSendingVerificationCode || isSigningIn}
               maxLength={6}
               onComplete={onOTPComplete}
-              disabled={isSendingVerificationCode || isSigningIn}
-              className="text-lg"
             >
               <InputOTPGroup>
-                <InputOTPSlot
-                  index={0}
-                  className="size-10 sm:size-12"
-                />
-                <InputOTPSlot
-                  index={1}
-                  className="size-10 sm:size-12"
-                />
-                <InputOTPSlot
-                  index={2}
-                  className="size-10 sm:size-12"
-                />
+                <InputOTPSlot className="size-10 sm:size-12" index={0} />
+                <InputOTPSlot className="size-10 sm:size-12" index={1} />
+                <InputOTPSlot className="size-10 sm:size-12" index={2} />
               </InputOTPGroup>
               <InputOTPSeparator />
               <InputOTPGroup>
-                <InputOTPSlot
-                  index={3}
-                  className="size-10 sm:size-12"
-                />
-                <InputOTPSlot
-                  index={4}
-                  className="size-10 sm:size-12"
-                />
-                <InputOTPSlot
-                  index={5}
-                  className="size-10 sm:size-12"
-                />
+                <InputOTPSlot className="size-10 sm:size-12" index={3} />
+                <InputOTPSlot className="size-10 sm:size-12" index={4} />
+                <InputOTPSlot className="size-10 sm:size-12" index={5} />
               </InputOTPGroup>
             </InputOTP>
             <Button
+              className="w-full"
+              onClick={() => setIsOTPVerificationModalOpen(false)}
               size="lg"
               variant="secondary"
-              className="w-full "
-              onClick={() => setIsOTPVerificationModalOpen(false)}
             >
               Edit phone number
             </Button>
@@ -263,5 +266,5 @@ export function CheckoutForm({ cartLineItems }: CheckoutFormProps) {
         </AlertDialogContent>
       </AlertDialog>
     </>
-  )
+  );
 }

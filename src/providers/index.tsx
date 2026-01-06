@@ -1,12 +1,12 @@
 "use client";
 
-import { TRPCReactProvider } from "~/trpc/react";
-import { ThemeProvider } from "./theme-provider";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { useMediaQuery } from "usehooks-ts";
-import { TooltipProvider } from "~/components/ui/tooltip";
 import { Toaster } from "~/components/ui/sonner";
-import { SpeedInsights } from "@vercel/speed-insights/next"
+import { TooltipProvider } from "~/components/ui/tooltip";
+import { TRPCReactProvider } from "~/trpc/react";
+import { ThemeProvider } from "./theme-provider";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   const isDesktop = useMediaQuery("(min-width: 1079px)");
@@ -14,9 +14,10 @@ export default function Providers({ children }: { children: React.ReactNode }) {
     <TRPCReactProvider>
       <ThemeProvider
         attribute="class"
-        enableColorScheme
+        defaultTheme="light"
         disableTransitionOnChange
-        defaultTheme="dark"
+        enableColorScheme
+        forcedTheme="light"
       >
         <TooltipProvider>
           <NuqsAdapter>
@@ -25,11 +26,11 @@ export default function Providers({ children }: { children: React.ReactNode }) {
           </NuqsAdapter>
         </TooltipProvider>
         <Toaster
-          richColors
           expand={isDesktop}
           position={isDesktop ? "bottom-right" : "top-center"}
+          richColors
         />
       </ThemeProvider>
     </TRPCReactProvider>
   );
-};
+}
