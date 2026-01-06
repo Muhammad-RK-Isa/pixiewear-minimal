@@ -1,15 +1,15 @@
+import { sha256 } from "@oslojs/crypto/sha2";
 import {
   encodeBase32LowerCaseNoPadding,
   encodeHexLowerCase,
 } from "@oslojs/encoding";
-import { sha256 } from "@oslojs/crypto/sha2"
+import { eq } from "drizzle-orm";
+import { cookies } from "next/headers";
+import type { Cookie } from "oslo/cookie";
+import { serializeCookie } from "oslo/cookie";
+import { env } from "~/env";
 import { db } from "~/server/db";
 import { sessions } from "~/server/db/schema";
-import { serializeCookie } from "oslo/cookie";
-import type { Cookie } from "oslo/cookie";
-import { env } from "~/env";
-import { cookies } from "next/headers";
-import { eq } from "drizzle-orm";
 
 const COOKIE_NAME = "session";
 
@@ -47,7 +47,7 @@ async function createSession({
     id: sessionId,
     userId,
     expiresAt,
-  })
+  });
 
   return {
     id: token,
@@ -57,7 +57,6 @@ async function createSession({
   };
 }
 
-
 function generateSessionCookie(token: string): Cookie {
   const name = "session";
   const attributes: Cookie["attributes"] = {
@@ -66,13 +65,13 @@ function generateSessionCookie(token: string): Cookie {
     sameSite: "lax",
     path: "/",
     maxAge: 1000 * 60 * 60 * 24 * 30,
-  }
+  };
   return {
     name,
     value: token,
     attributes,
     serialize: () => serializeCookie(name, token, attributes),
-  }
+  };
 }
 
 function generateBlankSessionCookie(): Cookie {
@@ -83,13 +82,13 @@ function generateBlankSessionCookie(): Cookie {
     sameSite: "lax",
     path: "/",
     maxAge: 0,
-  }
+  };
   return {
     name,
     value: "",
     attributes,
     serialize: () => serializeCookie(name, "", attributes),
-  }
+  };
 }
 
 async function readSessonCookie() {
@@ -100,14 +99,14 @@ async function validateSession(token: string) {
   const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
 
   const session = await db.query.sessions.findFirst({
-    where: (t, { eq }) => eq(t.id, sessionId)
-  })
+    where: (t, { eq }) => eq(t.id, sessionId),
+  });
 
   if (!session) {
     return {
       session: null,
       user: null,
-    }
+    };
   }
 
   if (session.expiresAt.getTime() <= Date.now()) {
@@ -115,7 +114,7 @@ async function validateSession(token: string) {
     return {
       session: null,
       user: null,
-    }
+    };
   }
 
   const user = await db.query.users.findFirst({
@@ -131,15 +130,15 @@ async function validateSession(token: string) {
       role: true,
       createdAt: true,
       updatedAt: true,
-    }
-  })
+    },
+  });
 
   if (!user) {
     await db.delete(sessions).where(eq(sessions.id, session.id));
     return {
       session: null,
       user: null,
-    }
+    };
   }
 
   return {
@@ -148,14 +147,12 @@ async function validateSession(token: string) {
       id: token,
     },
     user,
-  }
+  };
 }
 
 async function invalidateSession(token: string) {
   const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
-  await db
-    .delete(sessions)
-    .where(eq(sessions.id, sessionId))
+  await db.delete(sessions).where(eq(sessions.id, sessionId));
 }
 
 export const auth = {
@@ -164,5 +161,5 @@ export const auth = {
   generateBlankSessionCookie,
   readSessonCookie,
   validateSession,
-  invalidateSession
-}
+  invalidateSession,
+};

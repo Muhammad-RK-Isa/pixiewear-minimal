@@ -1,20 +1,22 @@
 "use client";
 
-import * as React from "react"
-import { useRouter } from "next/navigation"
-
-import { Button } from "./button"
-import type { ButtonProps } from "./button"
-import { RotateCw } from "lucide-react"
-import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip"
-import { Spinner } from "./spinner"
-import { cn } from "~/lib/utils"
+import { RotateCw } from "lucide-react";
+import { useRouter } from "next/navigation";
+import * as React from "react";
+import { cn } from "~/lib/utils";
+import type { ButtonProps } from "./button";
+import { Button } from "./button";
+import { Spinner } from "./spinner";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip";
 
 interface RefreshButtonProps extends ButtonProps {
-  showTooltip?: boolean
+  showTooltip?: boolean;
 }
 
-export function RefreshButton({ showTooltip = true, ...props }: RefreshButtonProps) {
+export function RefreshButton({
+  showTooltip = true,
+  ...props
+}: RefreshButtonProps) {
   const [isRefreshing, setIsRefreshing] = React.useState(false);
   const router = useRouter();
 
@@ -22,22 +24,22 @@ export function RefreshButton({ showTooltip = true, ...props }: RefreshButtonPro
     <Tooltip>
       <TooltipTrigger asChild>
         <Button
-          variant="outline"
-          size="sm"
           disabled={isRefreshing}
           onClick={() => {
-            if (typeof window === "undefined") return
-            setIsRefreshing(true)
+            if (typeof window === "undefined") return;
+            setIsRefreshing(true);
             void router.refresh();
             setIsRefreshing(false);
           }}
+          size="sm"
+          variant="outline"
           {...props}
           className={cn("size-8", props.className)}
         >
           {isRefreshing ? (
             <Spinner />
           ) : (
-            <RotateCw className="size-4" aria-hidden="true" />
+            <RotateCw aria-hidden="true" className="size-4" />
           )}
           <span className="sr-only">Refresh the page</span>
         </Button>
@@ -48,5 +50,5 @@ export function RefreshButton({ showTooltip = true, ...props }: RefreshButtonPro
         </TooltipContent>
       ) : null}
     </Tooltip>
-  )
+  );
 }

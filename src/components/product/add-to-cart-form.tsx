@@ -61,7 +61,6 @@ export function AddToCartForm({ product }: AddToCartFormProps) {
   async function onSubmit(data: UpdateCartItemSchemaType) {
     setIsAddingToCart(true);
     await addToCartAsync(data, {
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       onSuccess: async () => {
         await utils.cart.get.invalidate();
         if (isDesktop) {
@@ -174,7 +173,6 @@ export function AddToCartForm({ product }: AddToCartFormProps) {
                     quantity: form.getValues("quantity"),
                   },
                   {
-                    // eslint-disable-next-line @typescript-eslint/no-misused-promises
                     onSuccess: async () => {
                       await utils.cart.get.invalidate();
                       router.push("/checkout");

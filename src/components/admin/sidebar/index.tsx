@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   Box,
@@ -7,11 +7,10 @@ import {
   ShoppingCart,
   StoreIcon,
   UsersRound,
-} from "lucide-react"
-import * as React from "react"
-
-import Link from "next/link"
-import { usePathname } from "next/navigation"
+} from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import type * as React from "react";
 import {
   Sidebar,
   SidebarContent,
@@ -23,103 +22,100 @@ import {
   SidebarMenuItem,
   SidebarRail,
   SidebarSeparator,
-} from "~/components/ui/sidebar"
-import { NavUser } from "./nav-user"
-import { CollapsibleMenuItem } from "./collapsible-menu-item"
-import { TextShine } from "~/components/ui/text-shine"
+} from "~/components/ui/sidebar";
+import { TextShine } from "~/components/ui/text-shine";
+import { CollapsibleMenuItem } from "./collapsible-menu-item";
+import { NavUser } from "./nav-user";
 
 export interface NavSubItem {
-  title: string
-  url: string
+  title: string;
+  url: string;
 }
 
 export interface NavItem {
-  title: string
-  url: string
-  icon: React.ComponentType<React.ComponentProps<"svg">>
-  items?: NavSubItem[]
+  title: string;
+  url: string;
+  icon: React.ComponentType<React.ComponentProps<"svg">>;
+  items?: NavSubItem[];
 }
 
 export function AppSidebar() {
-
   const items: NavItem[] = [
     {
       title: "Dashboard",
-      url: `/admin/dashboard`,
+      url: "/admin/dashboard",
       icon: ChartLine,
     },
     {
       title: "Orders",
-      url: `/admin/orders`,
+      url: "/admin/orders",
       icon: ShoppingCart,
     },
     {
       title: "Products",
-      url: `/admin/products`,
+      url: "/admin/products",
       icon: Box,
       items: [
         {
           title: "Inventory",
-          url: `/admin/inventory`,
+          url: "/admin/inventory",
         },
         {
           title: "Categories",
-          url: `/admin/categories`,
+          url: "/admin/categories",
         },
         {
           title: "Collections",
-          url: `/admin/collections`,
+          url: "/admin/collections",
         },
-      ]
+      ],
     },
     {
       title: "Users",
-      url: `/admin/users`,
+      url: "/admin/users",
       icon: UsersRound,
     },
     {
       title: "Files",
-      url: `/admin/files`,
+      url: "/admin/files",
       icon: GalleryVertical,
     },
     {
       title: "Store",
-      url: `/`,
+      url: "/",
       icon: StoreIcon,
-    }
-  ]
-  const pathname = usePathname()
+    },
+  ];
+  const pathname = usePathname();
   return (
     <Sidebar>
       <SidebarHeader>
         <TextShine
+          className="mx-2.5 my-2 font-alenia font-bold text-2xl uppercase transition-all"
           duration={10}
           text="Pixiewear"
-          className="text-2xl uppercase font-bold transition-all mx-2.5 my-2 font-alenia"
         />
       </SidebarHeader>
-      <SidebarSeparator/>
+      <SidebarSeparator />
       <SidebarContent>
         <SidebarGroup>
           <SidebarMenu>
             {items.map((item) => {
               if (item.items?.length)
-                return (
-                  <CollapsibleMenuItem key={item.url} item={item} />
-                )
+                return <CollapsibleMenuItem item={item} key={item.url} />;
               return (
                 <SidebarMenuItem key={item.title}>
-                  <Link
-                    href={item.url}
-                    prefetch={true}
-                  >
-                    <SidebarMenuButton tooltip={item.title} isActive={item.url === pathname}>
+                  <Link href={item.url} prefetch={true}>
+                    <SidebarMenuButton
+                      isActive={item.url === pathname}
+                      tooltip={item.title}
+                    >
                       <item.icon />
                       <span>{item.title}</span>
                     </SidebarMenuButton>
                   </Link>
                 </SidebarMenuItem>
-              )
+              );
             })}
           </SidebarMenu>
         </SidebarGroup>
@@ -129,5 +125,5 @@ export function AppSidebar() {
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
-  )
+  );
 }

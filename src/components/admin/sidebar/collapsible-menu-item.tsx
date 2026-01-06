@@ -1,51 +1,50 @@
 "use client";
 
-import React from "react"
-import { ChevronRight } from "lucide-react"
+import { ChevronRight } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import React from "react";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "~/components/ui/collapsible"
+} from "~/components/ui/collapsible";
 import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-} from "~/components/ui/sidebar"
-import type { NavItem } from "."
-import { usePathname } from "next/navigation"
-import Link from "next/link";
+} from "~/components/ui/sidebar";
+import type { NavItem } from ".";
 
 interface CollapsibleMenuItemProps {
-  item: NavItem
+  item: NavItem;
 }
 
 export function CollapsibleMenuItem({ item }: CollapsibleMenuItemProps) {
-  const pathname = usePathname()
-  const [open, setOpen] = React.useState(false)
+  const pathname = usePathname();
+  const [open, setOpen] = React.useState(false);
   if (!item.items?.length) return null;
   return (
     <Collapsible
       asChild
-      defaultOpen={item.url === pathname || item.items.some((v) => v.url === pathname)}
       className="group/collapsible"
-      open={open}
+      defaultOpen={
+        item.url === pathname || item.items.some((v) => v.url === pathname)
+      }
       onOpenChange={(v) => {
-        if (pathname !== item.url) setOpen(true)
-        else setOpen(v)
+        if (pathname !== item.url) setOpen(true);
+        else setOpen(v);
       }}
+      open={open}
     >
       <SidebarMenuItem>
         <CollapsibleTrigger asChild>
-          <Link
-            href={item.url}
-            prefetch={true}
-          >
+          <Link href={item.url} prefetch={true}>
             <SidebarMenuButton
-              tooltip={item.title}
               isActive={item.url === pathname}
+              tooltip={item.title}
             >
               <item.icon />
               <span>{item.title}</span>
@@ -57,7 +56,10 @@ export function CollapsibleMenuItem({ item }: CollapsibleMenuItemProps) {
           <SidebarMenuSub>
             {item.items.map((subItem) => (
               <SidebarMenuSubItem key={subItem.title}>
-                <SidebarMenuSubButton asChild isActive={subItem.url === pathname}>
+                <SidebarMenuSubButton
+                  asChild
+                  isActive={subItem.url === pathname}
+                >
                   <Link href={subItem.url}>
                     <span>{subItem.title}</span>
                   </Link>
@@ -68,5 +70,5 @@ export function CollapsibleMenuItem({ item }: CollapsibleMenuItemProps) {
         </CollapsibleContent>
       </SidebarMenuItem>
     </Collapsible>
-  )
+  );
 }

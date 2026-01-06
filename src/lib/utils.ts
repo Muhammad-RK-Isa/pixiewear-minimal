@@ -1,35 +1,48 @@
-import { clsx, type ClassValue } from "clsx"
-import type { AnyColumn, Column, GetColumnData, SelectedFields, SQL, Table } from "drizzle-orm";
-import { and, is, not, sql, } from "drizzle-orm";
+import { sha256 } from "@oslojs/crypto/sha2";
+import { type ClassValue, clsx } from "clsx";
+import type {
+  AnyColumn,
+  Column,
+  GetColumnData,
+  SelectedFields,
+  SQL,
+  Table,
+} from "drizzle-orm";
+import { and, is, not, sql } from "drizzle-orm";
 import type { AnyPgColumn } from "drizzle-orm/pg-core";
-import { text, timestamp, PgTimestampString } from "drizzle-orm/pg-core";
+import { PgTimestampString, text, timestamp } from "drizzle-orm/pg-core";
 import type { SelectResultFields } from "drizzle-orm/query-builders/select.types";
 import type { PostgresError } from "postgres";
-import { twMerge } from "tailwind-merge"
-import { v1 as uuidv1, v7 as uuidv7 } from "uuid"
-import type { QueryBuilderOpts } from "~/types";
+import { twMerge } from "tailwind-merge";
+import { v1 as uuidv1, v7 as uuidv7 } from "uuid";
 import { z } from "zod";
 import { env } from "~/env";
-import { sha256 } from "@oslojs/crypto/sha2";
+import type { QueryBuilderOpts } from "~/types";
 
 export function getBaseUrl() {
   if (typeof window !== "undefined") return window.location.origin;
   return env.NEXT_PUBLIC_APP_URL;
-};
+}
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
 export function generateId({ prefix }: { prefix?: string } = {}) {
   return `${prefix ? prefix + "_" : ""}${uuidv7()}`;
 }
 
-export function generatePGTableId({ name = "id", prefix }: { name?: string, prefix: string }) {
+export function generatePGTableId({
+  name = "id",
+  prefix,
+}: {
+  name?: string;
+  prefix: string;
+}) {
   return text(name)
     .primaryKey()
     .notNull()
-    .$defaultFn(() => generateId({ prefix }))
+    .$defaultFn(() => generateId({ prefix }));
 }
 
 export function generateOrderId(): string {
@@ -44,12 +57,13 @@ export function generateOrderId(): string {
 }
 
 export function generateRandomOTP(): string {
-  const max = 999999;
-  const min = 100000;
-  const randomInt = Math.floor(
-    // @typescript-eslint/no-non-null-assertion
-    crypto.getRandomValues(new Uint32Array(1))[0]! / (0xffffffff + 1) * (max - min + 1)
-  ) + min;
+  const max = 999_999;
+  const min = 100_000;
+  const randomInt =
+    Math.floor(
+      (crypto.getRandomValues(new Uint32Array(1))[0]! / (0xff_ff_ff_ff + 1)) *
+        (max - min + 1)
+    ) + min;
   return String(randomInt);
 }
 
@@ -62,7 +76,7 @@ export function formatDate(
     day: opts.day ?? "numeric",
     year: opts.year ?? "numeric",
     ...opts,
-  }).format(new Date(date))
+  }).format(new Date(date));
 }
 
 export function isPostgresError(error: unknown): error is PostgresError {
@@ -75,7 +89,10 @@ export function isPostgresError(error: unknown): error is PostgresError {
   );
 }
 
-export function generateExpiryDate(amount: number, unit: "m" | "h" | "d" | "mo" | "y" = "m"): Date {
+export function generateExpiryDate(
+  amount: number,
+  unit: "m" | "h" | "d" | "mo" | "y" = "m"
+): Date {
   if (amount <= 0) {
     throw new Error("Amount must be a positive number.");
   }
@@ -110,7 +127,7 @@ export function toSentenceCase(str: string) {
     .toLowerCase()
     .replace(/^\w/, (c) => c.toUpperCase())
     .replace(/\s+/g, " ")
-    .trim()
+    .trim();
 }
 
 export const lifecycleDates = {
@@ -170,7 +187,7 @@ export function takeFirstOrThrow<TData>(items: TData[]) {
  */
 export function coalesce<TData>(
   value: SQL.Aliased<TData> | SQL<TData>,
-  defaultValue: SQL<TData>,
+  defaultValue: SQL<TData>
 ) {
   return sql<TData>`coalesce(${value}, ${defaultValue})`;
 }
@@ -182,13 +199,13 @@ export function coalesce<TData>(
  * @returns A sql json_build_object statement.
  */
 export function jsonBuildObject<TFields extends SelectedFields<Column, Table>>(
-  shape: TFields,
+  shape: TFields
 ) {
   const chunks: SQL[] = [];
 
   Object.entries(shape).forEach(([key, value]) => {
     if (chunks.length > 0) {
-      chunks.push(sql.raw(`,`));
+      chunks.push(sql.raw(","));
     }
 
     chunks.push(sql.raw(`'${key}',`));
@@ -215,7 +232,7 @@ export function jsonBuildObject<TFields extends SelectedFields<Column, Table>>(
  */
 export function jsonAgg<Column extends AnyColumn>(
   column: Column,
-  opts?: QueryBuilderOpts,
+  opts?: QueryBuilderOpts
 ) {
   const orderBy = opts?.orderBy ? sql` order by ${opts.orderBy}` : sql``;
 
@@ -227,7 +244,7 @@ export function jsonAgg<Column extends AnyColumn>(
 
   return coalesce<GetColumnData<Column, "raw">[]>(
     sql`${aggregateFunction} filter (where ${where})`,
-    sql`'[]'::json`,
+    sql`'[]'::json`
   );
 }
 
@@ -245,16 +262,16 @@ export function jsonAggBuildObject<
   const nullishWhere = opts?.nullish
     ? sql`true`
     : sql`${sql.join(
-      Object.values(shape).map((value) => sql`${value} is not null`),
-      sql` and `,
-    )}`;
+        Object.values(shape).map((value) => sql`${value} is not null`),
+        sql` and `
+      )}`;
 
   const orderBy = opts?.orderBy ? sql` order by ${opts.orderBy}` : sql``;
   const where = opts?.where ? and(opts.where, nullishWhere) : nullishWhere;
 
   return coalesce<SelectResultFields<TFields>[]>(
     sql`json_agg(${jsonBuildObject(shape)}${orderBy}) filter (where ${where})`,
-    sql`'[]'::json`,
+    sql`'[]'::json`
   );
 }
 
@@ -268,7 +285,7 @@ export function jsonAggBuildObject<
 
 export function arrayAgg<Column extends AnyColumn>(
   column: Column,
-  opts?: QueryBuilderOpts,
+  opts?: QueryBuilderOpts
 ) {
   const orderBy = opts?.orderBy ? sql` order by ${opts.orderBy}` : sql``;
 
@@ -294,7 +311,7 @@ export function arrayAggBuildObject<
       sql.raw(`'${key}'`),
       value,
     ]),
-    sql`, `,
+    sql`, `
   )})`;
 
   const distinctClause = options?.distinct ? sql`distinct ` : sql``;
@@ -322,7 +339,7 @@ export function arrayAggBuildObject<
  */
 export function caseWhen<TColumn extends Column>(
   cases: { when: SQL | undefined; then: Column }[],
-  elseValue: TColumn,
+  elseValue: TColumn
 ) {
   const chunks: SQL[] = [];
 
@@ -344,7 +361,7 @@ export function caseWhen<TColumn extends Column>(
  */
 export function compose<TColumn extends Column>(
   columns: TColumn[],
-  separator = "",
+  separator = ""
 ) {
   const chunks = columns.map((column) => sql`${column}::text`);
 
@@ -390,25 +407,29 @@ export function formatBytes(
   decimals = 0,
   sizeType: "accurate" | "normal" = "normal"
 ) {
-  const sizes = ["Bytes", "KB", "MB", "GB", "TB"]
-  const accurateSizes = ["Bytes", "KiB", "MiB", "GiB", "TiB"]
-  if (bytes === 0) return "0 Byte"
-  const i = Math.floor(Math.log(bytes) / Math.log(1024))
-  return `${(bytes / Math.pow(1024, i)).toFixed(decimals)} ${sizeType === "accurate"
-    ? (accurateSizes[i] ?? "Bytest")
-    : (sizes[i] ?? "Bytes")
-    }`
-};
+  const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
+  const accurateSizes = ["Bytes", "KiB", "MiB", "GiB", "TiB"];
+  if (bytes === 0) return "0 Byte";
+  const i = Math.floor(Math.log(bytes) / Math.log(1024));
+  return `${(bytes / 1024 ** i).toFixed(decimals)} ${
+    sizeType === "accurate"
+      ? (accurateSizes[i] ?? "Bytest")
+      : (sizes[i] ?? "Bytes")
+  }`;
+}
 
 export function getErrorMessage(err: unknown) {
   if (err instanceof z.ZodError) {
-    return err.errors[0]?.message ?? "An unknown error occurred. Please try again later."
-  } else if (err instanceof Error) {
-    return err.message
-  } else {
-    return "An unknown error occurred. Please try again later."
+    return (
+      err.errors[0]?.message ??
+      "An unknown error occurred. Please try again later."
+    );
   }
-};
+  if (err instanceof Error) {
+    return err.message;
+  }
+  return "An unknown error occurred. Please try again later.";
+}
 
 export function slugify(str: string) {
   return str
@@ -416,7 +437,7 @@ export function slugify(str: string) {
     .replace(/\s+/g, "-")
     .replace(/[^\w-]+/g, "")
     .replace(/--+/g, "-")
-    .replace(/^-+|-+$/g, "")
+    .replace(/^-+|-+$/g, "");
 }
 
 export const sha256Hash = (input: string): string => {

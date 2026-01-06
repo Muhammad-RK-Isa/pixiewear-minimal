@@ -174,7 +174,6 @@ export function CheckoutForm({ cartLineItems }: CheckoutFormProps) {
         });
       });
     };
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     triggerInitiateCheckout();
   }, []);
 

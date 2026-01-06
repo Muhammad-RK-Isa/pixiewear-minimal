@@ -6,7 +6,10 @@ import type { TRPCContext } from "~/server/api/trpc";
 import { securityCodes } from "~/server/db/schema";
 import { sendSMS } from "~/server/sms";
 
-export async function sendVerificationCode(ctx: TRPCContext, input: SendVerificationCodeSchemaType) {
+export async function sendVerificationCode(
+  ctx: TRPCContext,
+  input: SendVerificationCodeSchemaType
+) {
   const [result] = await ctx.db
     .insert(securityCodes)
     .values({
@@ -14,18 +17,18 @@ export async function sendVerificationCode(ctx: TRPCContext, input: SendVerifica
       code: generateRandomOTP(),
     })
     .returning({
-      code: securityCodes.code
-    })
+      code: securityCodes.code,
+    });
 
   if (!result) {
     throw new TRPCError({
       code: "INTERNAL_SERVER_ERROR",
       message: "Failed to create verification code",
-    })
+    });
   }
 
   await sendSMS({
     message: `Your ${APP_TITLE} OTP is ${result.code}`,
     receiver: input.phone,
-  })
+  });
 }

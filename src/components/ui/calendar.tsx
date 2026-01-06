@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import * as React from "react";
+import type * as React from "react";
 import { DayPicker } from "react-day-picker";
 
 import { buttonVariants } from "~/components/ui/button";
 import { cn } from "~/lib/utils";
 
-export type CalendarProps = React.ComponentProps<typeof DayPicker>
+export type CalendarProps = React.ComponentProps<typeof DayPicker>;
 
 function Calendar({
   className,
@@ -17,7 +17,6 @@ function Calendar({
 }: CalendarProps) {
   return (
     <DayPicker
-      showOutsideDays={showOutsideDays}
       className={cn("p-3", className)}
       classNames={{
         months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
@@ -66,13 +65,12 @@ function Calendar({
         IconRight: ({ className, ...props }) => (
           <ChevronRight className={cn("size-4", className)} {...props} />
         ),
-
       }}
+      showOutsideDays={showOutsideDays}
       {...props}
     />
-  )
+  );
 }
-Calendar.displayName = "Calendar"
+Calendar.displayName = "Calendar";
 
 export { Calendar };
-

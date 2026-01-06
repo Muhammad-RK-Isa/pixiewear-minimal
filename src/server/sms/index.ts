@@ -44,17 +44,17 @@ export const sendSMS = async (input: SendSMSInput | SendSMSInput[]) => {
         "Content-Type": "application/x-www-form-urlencoded",
       },
       body: new URLSearchParams(payload),
-    })
+    });
 
-    const data = await response.json() as unknown as SMSApiResponse;
+    const data = (await response.json()) as unknown as SMSApiResponse;
 
     if (data.error_message) {
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: data.error_message,
-      })
+      });
     }
   } else {
-    console.log("SMS Sent ", input)
+    console.log("SMS Sent ", input);
   }
 };

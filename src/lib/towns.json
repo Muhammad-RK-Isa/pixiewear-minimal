@@ -28,12 +28,7 @@
     "Manpura",
     "Tazumuddin"
   ],
-  "Jhalokati": [
-    "Jhalokati Sadar",
-    "Kathalia",
-    "Nalchity",
-    "Rajapur"
-  ],
+  "Jhalokati": ["Jhalokati Sadar", "Kathalia", "Nalchity", "Rajapur"],
   "Patuakhali": [
     "Bauphal",
     "Dashmina",
@@ -171,13 +166,7 @@
     "Rajasthali",
     "Rangamati Sadar"
   ],
-  "Dhaka": [
-    "Dhamrai",
-    "Dohar",
-    "Keraniganj",
-    "Nawabganj",
-    "Savar"
-  ],
+  "Dhaka": ["Dhamrai", "Dohar", "Keraniganj", "Nawabganj", "Savar"],
   "Faridpur": [
     "Alfadanga",
     "Bhanga",
@@ -211,12 +200,7 @@
     "Pakundia",
     "Tarail"
   ],
-  "Madaripur": [
-    "Kalkini",
-    "Madaripur Sadar",
-    "Rajoir",
-    "Shibchar"
-  ],
+  "Madaripur": ["Kalkini", "Madaripur Sadar", "Rajoir", "Shibchar"],
   "Manikganj": [
     "Daulatpur",
     "Ghior",
@@ -288,12 +272,7 @@
     "Rampal",
     "Sarankhola"
   ],
-  "Chuadanga": [
-    "Alamdanga",
-    "Chuadanga Sadar",
-    "Damurhuda",
-    "Jibannagar"
-  ],
+  "Chuadanga": ["Alamdanga", "Chuadanga Sadar", "Damurhuda", "Jibannagar"],
   "Jashore": [
     "Abhaynagar",
     "Bagherpara",
@@ -324,29 +303,10 @@
     "Rupsa",
     "Terokhada"
   ],
-  "Kushtia": [
-    "Bheramara",
-    "Daulatpur",
-    "Khoksa",
-    "Kushtia Sadar",
-    "Mirpur"
-  ],
-  "Magura": [
-    "Magura Sadar",
-    "Mohammadpur",
-    "Shalikha",
-    "Sreepur"
-  ],
-  "Meherpur": [
-    "Gangni",
-    "Meherpur Sadar",
-    "Mujibnagar"
-  ],
-  "Narail": [
-    "Kalia",
-    "Lohagara",
-    "Narail Sadar"
-  ],
+  "Kushtia": ["Bheramara", "Daulatpur", "Khoksa", "Kushtia Sadar", "Mirpur"],
+  "Magura": ["Magura Sadar", "Mohammadpur", "Shalikha", "Sreepur"],
+  "Meherpur": ["Gangni", "Meherpur Sadar", "Mujibnagar"],
+  "Narail": ["Kalia", "Lohagara", "Narail Sadar"],
   "Satkhira": [
     "Ashashuni",
     "Debhata",
@@ -415,13 +375,7 @@
     "Nawabganj Sadar",
     "Shibganj"
   ],
-  "Joypurhat": [
-    "Akkelpur",
-    "Joypurhat Sadar",
-    "Kalai",
-    "Khetlal",
-    "Panchbibi"
-  ],
+  "Joypurhat": ["Akkelpur", "Joypurhat Sadar", "Kalai", "Khetlal", "Panchbibi"],
   "Naogaon": [
     "Atrai",
     "Badalgachhi",
@@ -526,13 +480,7 @@
     "Nilphamari Sadar",
     "Saidpur"
   ],
-  "Panchagarh": [
-    "Atwari",
-    "Boda",
-    "Debiganj",
-    "Panchagarh Sadar",
-    "Tetulia"
-  ],
+  "Panchagarh": ["Atwari", "Boda", "Debiganj", "Panchagarh Sadar", "Tetulia"],
   "Rangpur": [
     "Badarganj",
     "Gangachara",

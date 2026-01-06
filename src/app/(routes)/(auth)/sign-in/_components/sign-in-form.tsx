@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -16,12 +15,7 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-} from "~/components/ui/form";
+import { Form, FormControl, FormField, FormItem } from "~/components/ui/form";
 import { Input } from "~/components/ui/input";
 import {
   InputOTP,
@@ -32,9 +26,8 @@ import {
 import type { ProgressStatus } from "~/components/ui/progress-tabs";
 import { ProgressTabs } from "~/components/ui/progress-tabs";
 import { TextShine } from "~/components/ui/text-shine";
-import { cn } from "~/lib/utils";
-
 import { APP_TITLE } from "~/lib/constants";
+import { cn } from "~/lib/utils";
 import type { SignInSchemaType } from "~/lib/validators";
 import { signInSchema } from "~/lib/validators";
 import { api } from "~/trpc/react";
@@ -45,7 +38,7 @@ type StepStatus = Record<Tab, ProgressStatus>;
 
 export function SignInForm() {
   const router = useRouter();
-  const searchParams = useSearchParams()
+  const searchParams = useSearchParams();
   const [error, setError] = React.useState("");
   const [tab, setTab] = React.useState<Tab>("phone");
 
@@ -65,24 +58,23 @@ export function SignInForm() {
   } = api.auth.sendVerificationCode.useMutation({
     onError: (err) => {
       toast.error(err.message);
-    }
+    },
   });
 
-  const { mutate: signIn, isPending } =
-    api.auth.signIn.useMutation({
-      onSuccess: () => {
-        toast.success("You are now signed in");
-        router.push(callbackUrl);
-      },
-      onError: (err) => {
-        toast.error(err.message);
-      },
-    });
+  const { mutate: signIn, isPending } = api.auth.signIn.useMutation({
+    onSuccess: () => {
+      toast.success("You are now signed in");
+      router.push(callbackUrl);
+    },
+    onError: (err) => {
+      toast.error(err.message);
+    },
+  });
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (
-      (!Object.keys(form.formState.errors).length || !error) &&
+      !(Object.keys(form.formState.errors).length && error) &&
       tab !== "otp"
     ) {
       await onNext();
@@ -114,7 +106,7 @@ export function SignInForm() {
 
       setTab(value);
     },
-    [form.trigger],
+    [form.trigger]
   );
 
   const onNext = React.useCallback(async () => {
@@ -141,7 +133,7 @@ export function SignInForm() {
               setError(err.message);
               return;
             },
-          },
+          }
         );
         setTab("otp");
         break;
@@ -174,34 +166,34 @@ export function SignInForm() {
 
   return (
     <motion.div
-      layout
-      initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.15, ease: "easeInOut" }}
       className="w-[20rem] rounded-xl border bg-card/50 text-card-foreground shadow-none backdrop-blur-sm sm:w-[24rem]"
+      initial={{ opacity: 0 }}
+      layout
+      transition={{ duration: 0.15, ease: "easeInOut" }}
     >
       <CardHeader className="pb-6">
         <CardTitle className="text-xl sm:text-2xl">Sign in</CardTitle>
         <CardDescription className="inline-flex items-center gap-1 text-muted-foreground">
           to continue to{" "}
           <TextShine
+            className="font-alenia font-bold text-sm transition-all"
             duration={10}
             text={APP_TITLE}
-            className="text-sm font-bold transition-all font-alenia"
           />
         </CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
           <ProgressTabs
-            value={tab}
             onValueChange={(tab) => onTabChange(tab as Tab)}
+            value={tab}
           >
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <ProgressTabs.Content value="phone" className="space-y-4">
+            <form className="space-y-4" onSubmit={handleSubmit}>
+              <ProgressTabs.Content className="space-y-4" value="phone">
                 <FormField
-                  name="phone"
                   control={form.control}
+                  name="phone"
                   render={({ field, fieldState }) => {
                     return (
                       <FormItem className="space-y-0">
@@ -209,20 +201,20 @@ export function SignInForm() {
                           <RPNInput.default
                             {...field}
                             className="flex h-10 rounded-lg tracking-wider shadow-sm placeholder:tracking-wider"
+                            countries={["BD"]}
+                            countrySelectProps={{ className: "hidden" }}
+                            defaultCountry="BD"
+                            inputComponent={Input}
+                            international={false}
                             numberInputProps={{
                               className: cn(
                                 "h-10",
                                 fieldState.error
                                   ? "border-destructive hover:border-destructive hover:focus-within:border-destructive focus-visible:border-destructive focus-visible:ring-destructive"
-                                  : "",
+                                  : ""
                               ),
                             }}
-                            inputComponent={Input}
                             placeholder="01XXX-XXXXXX"
-                            countrySelectProps={{ className: "hidden" }}
-                            international={false}
-                            countries={["BD"]}
-                            defaultCountry="BD"
                           />
                         </FormControl>
                       </FormItem>
@@ -232,8 +224,8 @@ export function SignInForm() {
               </ProgressTabs.Content>
               <ProgressTabs.Content value="otp">
                 <FormField
-                  name="verificationCode"
                   control={form.control}
+                  name="verificationCode"
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
@@ -241,36 +233,36 @@ export function SignInForm() {
                           <InputOTP
                             maxLength={6}
                             {...field}
-                            onComplete={async () => signIn(form.getValues())}
                             className="text-lg"
+                            onComplete={async () => signIn(form.getValues())}
                           >
                             <InputOTPGroup>
                               <InputOTPSlot
+                                className="size-10 sm:size-12"
                                 index={0}
-                                className="size-10 sm:size-12"
                               />
                               <InputOTPSlot
+                                className="size-10 sm:size-12"
                                 index={1}
-                                className="size-10 sm:size-12"
                               />
                               <InputOTPSlot
-                                index={2}
                                 className="size-10 sm:size-12"
+                                index={2}
                               />
                             </InputOTPGroup>
                             <InputOTPSeparator />
                             <InputOTPGroup>
                               <InputOTPSlot
+                                className="size-10 sm:size-12"
                                 index={3}
-                                className="size-10 sm:size-12"
                               />
                               <InputOTPSlot
+                                className="size-10 sm:size-12"
                                 index={4}
-                                className="size-10 sm:size-12"
                               />
                               <InputOTPSlot
-                                index={5}
                                 className="size-10 sm:size-12"
+                                index={5}
                               />
                             </InputOTPGroup>
                           </InputOTP>
@@ -281,35 +273,35 @@ export function SignInForm() {
                 />
               </ProgressTabs.Content>
               {(error || Object.keys(form.formState.errors).length > 0) && (
-                <ul className="list-disc space-y-1 overflow-hidden rounded-lg border border-destructive/60 bg-destructive/10 p-2 text-[0.8rem] font-medium text-destructive">
+                <ul className="list-disc space-y-1 overflow-hidden rounded-lg border border-destructive/60 bg-destructive/10 p-2 font-medium text-[0.8rem] text-destructive">
                   {Object.values(form.formState.errors).map(
                     ({ message }, idx) => (
                       <li className="ml-4" key={idx}>
                         {message}
                       </li>
-                    ),
+                    )
                   )}
                   {error && <li className="ml-4">{error}</li>}
                 </ul>
               )}
               <Button
-                disabled={isPending || isSendingVerificationCode}
-                loading={isPending || isSendingVerificationCode}
-                loader="dots"
-                iconPosition="right"
                 className="w-full"
+                disabled={isPending || isSendingVerificationCode}
+                iconPosition="right"
+                loader="dots"
+                loading={isPending || isSendingVerificationCode}
                 size="lg"
               >
                 {isPending ? "Signing you in" : "Continue"}
               </Button>
               <div className="my-8 h-px w-full bg-gradient-to-r from-transparent via-neutral-300 to-transparent dark:via-neutral-700" />
               <Button
-                size="lg"
-                variant="secondary"
-                type="button"
                 className="w-full border dark:border-2"
-                onClick={() => toast.info("Yet to be implemented.")}
                 disabled={isPending || isSendingVerificationCode}
+                onClick={() => toast.info("Yet to be implemented.")}
+                size="lg"
+                type="button"
+                variant="secondary"
               >
                 Continue with Google
               </Button>

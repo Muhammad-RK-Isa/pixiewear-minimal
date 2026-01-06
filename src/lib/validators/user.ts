@@ -21,12 +21,14 @@ export const verificationCodeSchema = z
 export const signInSchema = z.object({
   phone: phoneNumberSchema,
   verificationCode: verificationCodeSchema,
-})
+});
 
 export const sendVerificationCodeSchema = z.object({
   phone: phoneNumberSchema,
-})
+});
 
 export type SignInSchemaType = z.infer<typeof signInSchema>;
 export type VerificationCodeSchemaType = z.infer<typeof verificationCodeSchema>;
-export type SendVerificationCodeSchemaType = z.infer<typeof sendVerificationCodeSchema>;
+export type SendVerificationCodeSchemaType = z.infer<
+  typeof sendVerificationCodeSchema
+>;

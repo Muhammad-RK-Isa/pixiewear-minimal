@@ -1,10 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 
 interface MetaReponse {
-  events_received: number
-  messages: string[],
-  fbtrace_id: string,
+  events_received: number;
+  messages: string[];
+  fbtrace_id: string;
 }
 
 import { cookies, headers } from "next/headers";
@@ -15,7 +14,8 @@ import { generateId, sha256Hash } from "~/lib/utils";
 async function getUserInfo() {
   const heads = await headers();
 
-  const ipAddress = heads.get("x-real-ip") ?? heads.get("x-forwarded-for")?.split(",")[0];
+  const ipAddress =
+    heads.get("x-real-ip") ?? heads.get("x-forwarded-for")?.split(",")[0];
 
   const userAgent = heads.get("user-agent");
 
@@ -30,10 +30,12 @@ async function getUserInfo() {
     userAgent,
     fbclid,
     sourceUrl,
-  }
+  };
 }
 
-async function postEventToMeta(eventBody: Record<string, unknown>): Promise<MetaReponse> {
+async function postEventToMeta(
+  eventBody: Record<string, unknown>
+): Promise<MetaReponse> {
   const pixelId = env.META_PIXEL_ID;
 
   const graphApiEndpoint = `${META_GRAPH_API_ENDPOINT}/${pixelId}/events`;
@@ -52,9 +54,9 @@ async function postEventToMeta(eventBody: Record<string, unknown>): Promise<Meta
     }),
   });
 
-  const data = await response.json() as unknown as MetaReponse;
+  const data = (await response.json()) as unknown as MetaReponse;
 
-  console.log("META_GRAPH_RESPONSE: ", data );
+  console.log("META_GRAPH_RESPONSE: ", data);
 
   return data;
 }
@@ -65,7 +67,7 @@ export async function metaPageView(): Promise<MetaReponse> {
   const event = {
     event_id: generateId(),
     event_name: "PageView",
-    event_time: Math.floor(new Date().getTime() / 1000), 
+    event_time: Math.floor(new Date().getTime() / 1000),
     action_source: "website",
     user_data: {
       client_ip_address: ipAddress,
@@ -73,18 +75,23 @@ export async function metaPageView(): Promise<MetaReponse> {
       fbc: fbclid,
     },
     event_source_url: sourceUrl,
-  }
+  };
 
-  return postEventToMeta({ data: [event]});
+  return postEventToMeta({ data: [event] });
 }
 
-export async function metaViewContent(product: { id: string; name: string; price: number; currency: string }): Promise<MetaReponse> {
+export async function metaViewContent(product: {
+  id: string;
+  name: string;
+  price: number;
+  currency: string;
+}): Promise<MetaReponse> {
   const { ipAddress, userAgent, fbclid, sourceUrl } = await getUserInfo();
 
   const event = {
     event_id: generateId(),
     event_name: "ViewContent",
-    event_time: Math.floor(new Date().getTime() / 1000), 
+    event_time: Math.floor(new Date().getTime() / 1000),
     action_source: "website",
     user_data: {
       client_ip_address: ipAddress,
@@ -99,18 +106,23 @@ export async function metaViewContent(product: { id: string; name: string; price
       currency: product.currency,
       content_type: "product",
     },
-  }
+  };
 
   return postEventToMeta({ data: [event] });
 }
 
-export async function metaAddToCart(product: { id: string; name: string; price: number; currency: string }): Promise<MetaReponse> {
+export async function metaAddToCart(product: {
+  id: string;
+  name: string;
+  price: number;
+  currency: string;
+}): Promise<MetaReponse> {
   const { ipAddress, userAgent, fbclid, sourceUrl } = await getUserInfo();
 
   const event = {
     event_id: generateId(),
     event_name: "AddToCart",
-    event_time: Math.floor(new Date().getTime() / 1000), 
+    event_time: Math.floor(new Date().getTime() / 1000),
     action_source: "website",
     user_data: {
       client_ip_address: ipAddress,
@@ -125,21 +137,21 @@ export async function metaAddToCart(product: { id: string; name: string; price: 
       currency: product.currency,
       content_type: "product",
     },
-  }
+  };
 
   return postEventToMeta({ data: [event] });
 }
 
 interface MetaInitiateCheckout {
   user: {
-    email?: string
-    phone?: string
-    firstName?: string
-    lastName?: string
-    city?: string
-    state?: string
-    country?: string
-    zipCode?: string
+    email?: string;
+    phone?: string;
+    firstName?: string;
+    lastName?: string;
+    city?: string;
+    state?: string;
+    country?: string;
+    zipCode?: string;
   };
   products: {
     id: string;
@@ -160,7 +172,7 @@ export async function metaCheckout({
   const event = {
     event_id: generateId(),
     event_name: eventName,
-    event_time: Math.floor(new Date().getTime() / 1000), 
+    event_time: Math.floor(new Date().getTime() / 1000),
     action_source: "website",
     user_data: {
       client_ip_address: ipAddress,
@@ -185,7 +197,7 @@ export async function metaCheckout({
       value: total_price,
       currency: "BDT",
     },
-  }
+  };
 
   return postEventToMeta({ data: [event] });
 }

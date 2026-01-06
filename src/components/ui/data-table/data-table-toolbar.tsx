@@ -1,19 +1,18 @@
-"use client"
+"use client";
 
-import type { Table } from "@tanstack/react-table"
-import { X } from "lucide-react"
-import * as React from "react"
-import type { DataTableFilterField } from "~/types"
-
-import { cn } from "~/lib/utils"
-import { Button } from "../button"
-import { Input } from "../input"
-import { DataTableFacetedFilter } from "./data-table-faceted-filter"
-import { DataTableViewOptions } from "./data-table-view-options"
+import type { Table } from "@tanstack/react-table";
+import { X } from "lucide-react";
+import * as React from "react";
+import { cn } from "~/lib/utils";
+import type { DataTableFilterField } from "~/types";
+import { Button } from "../button";
+import { Input } from "../input";
+import { DataTableFacetedFilter } from "./data-table-faceted-filter";
+import { DataTableViewOptions } from "./data-table-view-options";
 
 interface DataTableToolbarProps<TData>
   extends React.HTMLAttributes<HTMLDivElement> {
-  table: Table<TData>
+  table: Table<TData>;
   /**
    * An array of filter field configurations for the data table.
    * When options are provided, a faceted filter is rendered.
@@ -36,7 +35,7 @@ interface DataTableToolbarProps<TData>
    *   }
    * ]
    */
-  filterFields?: DataTableFilterField<TData>[]
+  filterFields?: DataTableFilterField<TData>[];
 }
 
 export function DataTableToolbar<TData>({
@@ -46,16 +45,15 @@ export function DataTableToolbar<TData>({
   className,
   ...props
 }: DataTableToolbarProps<TData>) {
-
-  const isFiltered = table.getState().columnFilters.length > 0
+  const isFiltered = table.getState().columnFilters.length > 0;
 
   // Memoize computation of searchableColumns and filterableColumns
   const { searchableColumns, filterableColumns } = React.useMemo(() => {
     return {
       searchableColumns: filterFields.filter((field) => !field.options),
       filterableColumns: filterFields.filter((field) => field.options),
-    }
-  }, [filterFields])
+    };
+  }, [filterFields]);
 
   return (
     <div
@@ -65,25 +63,25 @@ export function DataTableToolbar<TData>({
       )}
       {...props}
     >
-      <div className="flex flex-1 items-center gap-2 overflow-auto min-w-48 p-[2px]">
+      <div className="flex min-w-48 flex-1 items-center gap-2 overflow-auto p-[2px]">
         {searchableColumns.length > 0 &&
           searchableColumns.map(
             (column) =>
               table.getColumn(column.id ? String(column.id) : "") && (
                 <Input
+                  className="h-8 w-40 text-sm lg:w-64"
                   key={String(column.id)}
+                  onChange={(event) =>
+                    table
+                      .getColumn(String(column.id))
+                      ?.setFilterValue(event.target.value)
+                  }
                   placeholder={column.placeholder}
                   value={
                     (table
                       .getColumn(String(column.id))
                       ?.getFilterValue() as string) || ""
                   }
-                  onChange={(event) =>
-                    table
-                      .getColumn(String(column.id))
-                      ?.setFilterValue(event.target.value)
-                  }
-                  className="h-8 w-40 lg:w-64 text-sm"
                 />
               )
           )}
@@ -92,22 +90,22 @@ export function DataTableToolbar<TData>({
             (column) =>
               table.getColumn(column.id ? String(column.id) : "") && (
                 <DataTableFacetedFilter
-                  key={String(column.id)}
                   column={table.getColumn(column.id ? String(column.id) : "")}
-                  title={column.label}
+                  key={String(column.id)}
                   options={column.options ?? []}
+                  title={column.label}
                 />
               )
           )}
         {isFiltered && (
           <Button
             aria-label="Reset filters"
-            variant="ghost"
             className="h-8 px-2 lg:px-3"
             onClick={() => table.resetColumnFilters()}
+            variant="ghost"
           >
             Reset
-            <X className="size-4" aria-hidden="true" />
+            <X aria-hidden="true" className="size-4" />
           </Button>
         )}
       </div>
@@ -116,5 +114,5 @@ export function DataTableToolbar<TData>({
         <DataTableViewOptions table={table} />
       </div>
     </div>
-  )
+  );
 }

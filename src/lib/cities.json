@@ -47,12 +47,7 @@
     "Narail",
     "Satkhira"
   ],
-  "Mymensingh": [
-    "Jamalpur",
-    "Mymensingh",
-    "Netrokona",
-    "Sherpur"
-  ],
+  "Mymensingh": ["Jamalpur", "Mymensingh", "Netrokona", "Sherpur"],
   "Rajshahi": [
     "Bogura",
     "Chapainawabganj",
@@ -73,10 +68,5 @@
     "Rangpur",
     "Thakurgaon"
   ],
-  "Sylhet": [
-    "Habiganj",
-    "Moulvibazar",
-    "Sunamganj",
-    "Sylhet"
-  ]
+  "Sylhet": ["Habiganj", "Moulvibazar", "Sunamganj", "Sylhet"]
 }

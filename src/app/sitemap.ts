@@ -12,22 +12,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           handle: products.handle,
         })
         .from(products)
-        .limit(50000)
+        .limit(50_000)
         .offset(0)
         .groupBy(products.id)
-        .orderBy(
-          desc(count(products.images)),
-          desc(products.createdAt)
-        )
+        .orderBy(desc(count(products.images)), desc(products.createdAt));
     } catch (_) {
-      return []
+      return [];
     }
   }
 
   const productsRoutes = (await getAllProducts()).map((product) => ({
     url: `${env.NEXT_PUBLIC_APP_URL}/products/${product.handle}`,
     lastModified: new Date().toISOString(),
-  }))
+  }));
 
   const routes = [
     "",
@@ -42,10 +39,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ].map((route) => ({
     url: `${env.NEXT_PUBLIC_APP_URL}${route}`,
     lastModified: new Date().toISOString(),
-  }))
+  }));
 
-  return [
-    ...routes,
-    ...productsRoutes,
-  ]
+  return [...routes, ...productsRoutes];
 }

@@ -8,7 +8,6 @@ import { Controller, FormProvider, useFormContext } from "react-hook-form";
 
 import { Label } from "~/components/ui/label";
 import { cn } from "~/lib/utils";
-;
 
 import { Input } from "./input";
 
@@ -22,7 +21,7 @@ interface FormFieldContextValue<
 }
 
 const FormFieldContext = React.createContext<FormFieldContextValue>(
-  {} as FormFieldContextValue,
+  {} as FormFieldContextValue
 );
 
 const FormField = <
@@ -45,7 +44,6 @@ const useFormField = () => {
 
   const fieldState = getFieldState(fieldContext.name, formState);
 
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (!fieldContext) {
     throw new Error("useFormField should be used within <FormField>");
   }
@@ -67,7 +65,7 @@ interface FormItemContextValue {
 }
 
 const FormItemContext = React.createContext<FormItemContextValue>(
-  {} as FormItemContextValue,
+  {} as FormItemContextValue
 );
 
 const FormItem: React.FC<React.ComponentProps<"div">> = ({
@@ -106,14 +104,14 @@ const FormInput: React.FC<React.ComponentProps<"input">> = ({
   const { error, formItemId } = useFormField();
   return (
     <Input
-      type={type}
+      aria-invalid={!!error}
       className={cn(
         error &&
-        "border-destructive hover:border-destructive hover:focus-within:border-destructive focus-visible:border-destructive focus-visible:ring-destructive",
-        className,
+          "border-destructive hover:border-destructive hover:focus-within:border-destructive focus-visible:border-destructive focus-visible:ring-destructive",
+        className
       )}
       id={formItemId}
-      aria-invalid={!!error}
+      type={type}
       {...props}
     />
   );
@@ -127,13 +125,11 @@ const FormControl: React.FC<React.ComponentProps<typeof Slot>> = ({
     useFormField();
   return (
     <Slot
-      id={formItemId}
       aria-describedby={
-        !error
-          ? `${formDescriptionId}`
-          : `${formDescriptionId} ${formMessageId}`
+        error ? `${formDescriptionId} ${formMessageId}` : `${formDescriptionId}`
       }
       aria-invalid={!!error}
+      id={formItemId}
       {...props}
     />
   );
@@ -148,8 +144,8 @@ const FormDescription: React.FC<React.ComponentProps<"p">> = ({
 
   return (
     <p
-      id={formDescriptionId}
       className={cn("text-[0.8rem] text-muted-foreground", className)}
+      id={formDescriptionId}
       {...props}
     />
   );
@@ -170,8 +166,8 @@ const FormMessage: React.FC<React.ComponentProps<"p">> = ({
 
   return (
     <p
+      className={cn("font-medium text-[0.8rem] text-destructive", className)}
       id={formMessageId}
-      className={cn("text-[0.8rem] font-medium text-destructive", className)}
       {...props}
     >
       {body}
@@ -184,8 +180,10 @@ export {
   Form,
   FormControl,
   FormDescription,
-  FormField, FormInput, FormItem, FormLabel,
+  FormField,
+  FormInput,
+  FormItem,
+  FormLabel,
   FormMessage,
-  useFormField
+  useFormField,
 };
-

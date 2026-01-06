@@ -2,7 +2,14 @@
 
 import { useFormContext } from "react-hook-form";
 import { Card, CardContent, CardHeader, CardTitle } from "~/components/ui/card";
-import { FormControl, FormField, FormInput, FormItem, FormLabel, FormMessage } from "~/components/ui/form";
+import {
+  FormControl,
+  FormField,
+  FormInput,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "~/components/ui/form";
 import type { CreateEditProductSchemaType } from "~/lib/validators";
 
 export function ProductCreateEditSEOForm() {
@@ -15,30 +22,26 @@ export function ProductCreateEditSEOForm() {
       </CardHeader>
       <CardContent className="space-y-4">
         <FormField
-          name="metaTitle"
           control={form.control}
+          name="metaTitle"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Meta title</FormLabel>
               <FormControl>
-                <FormInput
-                  {...field}
-                />
+                <FormInput {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
         <FormField
-          name="metaDescription"
           control={form.control}
+          name="metaDescription"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Meta description</FormLabel>
               <FormControl>
-                <FormInput
-                  {...field}
-                />
+                <FormInput {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

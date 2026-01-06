@@ -5,7 +5,6 @@ export type ProgressStatus = "not-started" | "in-progress" | "completed";
 
 import { CheckCircle2, CircleDashed, CircleFadingArrowUp } from "lucide-react";
 import { cn } from "~/lib/utils";
-;
 
 const ProgressTabsRoot = (props: ProgressTabsPrimitives.TabsProps) => {
   return <ProgressTabsPrimitives.Root {...props} />;
@@ -35,7 +34,7 @@ const ProgressIndicator = ({ status, className, ...props }: IndicatorProps) => {
     <span
       className={cn(
         "text-muted-foreground group-data-[state=active]/trigger:text-primary",
-        className,
+        className
       )}
       {...props}
     >
@@ -61,13 +60,13 @@ const ProgressTabsTrigger: React.FC<ProgressTabsTriggerProps> = ({
 }: ProgressTabsTriggerProps) => (
   <ProgressTabsPrimitives.Trigger
     className={cn(
-      "text-sm transition-colors text-muted-foreground opacity-50 border-r inline-flex h-[52px] w-full max-w-[200px] flex-1 items-center gap-x-2 px-4 text-left outline-none",
+      "inline-flex h-[52px] w-full max-w-[200px] flex-1 items-center gap-x-2 border-r px-4 text-left text-muted-foreground text-sm opacity-50 outline-none transition-colors",
       "group/trigger overflow-hidden text-ellipsis whitespace-nowrap",
-      "disabled:opacity-50 disabled:text-muted-foreground",
+      "disabled:text-muted-foreground disabled:opacity-50",
       "hover:bg-accent/50",
-      "focus-visible:bg-background focus:z-[1]",
+      "focus:z-[1] focus-visible:bg-background",
       "data-[state=active]:text-primary data-[state=active]:opacity-100",
-      className,
+      className
     )}
     {...props}
   >
@@ -77,19 +76,19 @@ const ProgressTabsTrigger: React.FC<ProgressTabsTriggerProps> = ({
 );
 ProgressTabsTrigger.displayName = "ProgressTabs.Trigger";
 
-const ProgressTabsList: React.FC<React.ComponentProps<
-  typeof ProgressTabsPrimitives.List
->> = ({
-  className, ...props
-}) => (
-    <ProgressTabsPrimitives.List
-      className={cn("flex items-center", className)}
-      {...props}
-    />
-  );
+const ProgressTabsList: React.FC<
+  React.ComponentProps<typeof ProgressTabsPrimitives.List>
+> = ({ className, ...props }) => (
+  <ProgressTabsPrimitives.List
+    className={cn("flex items-center", className)}
+    {...props}
+  />
+);
 ProgressTabsList.displayName = "ProgressTabs.List";
 
-const ProgressTabsContent: React.FC<React.ComponentProps<typeof ProgressTabsPrimitives.Content>> = ({ className, ...props }) => {
+const ProgressTabsContent: React.FC<
+  React.ComponentProps<typeof ProgressTabsPrimitives.Content>
+> = ({ className, ...props }) => {
   return (
     <ProgressTabsPrimitives.Content
       className={cn("outline-none", className)}

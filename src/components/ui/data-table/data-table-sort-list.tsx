@@ -1,28 +1,26 @@
-"use client"
+"use client";
 
-import type { SortDirection, Table } from "@tanstack/react-table"
+import type { SortDirection, Table } from "@tanstack/react-table";
 import {
   ArrowDownUp,
   Check,
   ChevronsUpDown,
   GripVertical,
   Trash2,
-} from "lucide-react"
-import { useQueryState } from "nuqs"
-import * as React from "react"
+} from "lucide-react";
+import { useQueryState } from "nuqs";
+import * as React from "react";
+import { Badge } from "~/components/ui/badge";
+import { Button } from "~/components/ui/button";
+import { dataTableConfig } from "~/config/data-table";
+import { useDebouncedCallback } from "~/lib/hooks/use-debounced-callback";
+import { getSortingStateParser } from "~/lib/parsers";
+import { cn, toSentenceCase } from "~/lib/utils";
 import type {
   ExtendedColumnSort,
   ExtendedSortingState,
   StringKeyOf,
-} from "~/types"
-
-import { dataTableConfig } from "~/config/data-table"
-import { cn } from "~/lib/utils"
-import { getSortingStateParser } from "~/lib/parsers"
-import { toSentenceCase } from "~/lib/utils"
-import { useDebouncedCallback } from "~/lib/hooks/use-debounced-callback"
-import { Badge } from "~/components/ui/badge"
-import { Button } from "~/components/ui/button"
+} from "~/types";
 import {
   Command,
   CommandEmpty,
@@ -30,29 +28,21 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "../command"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "../popover"
+} from "../command";
+import { Popover, PopoverContent, PopoverTrigger } from "../popover";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../select"
-import {
-  Sortable,
-  SortableDragHandle,
-  SortableItem,
-} from "../sortable"
+} from "../select";
+import { Sortable, SortableDragHandle, SortableItem } from "../sortable";
 
 interface DataTableSortListProps<TData> {
-  table: Table<TData>
-  debounceMs: number
-  shallow?: boolean
+  table: Table<TData>;
+  debounceMs: number;
+  shallow?: boolean;
 }
 
 export function DataTableSortList<TData>({
@@ -60,9 +50,10 @@ export function DataTableSortList<TData>({
   debounceMs,
   shallow,
 }: DataTableSortListProps<TData>) {
-  const id = React.useId()
+  const id = React.useId();
 
-  const initialSorting = (table.initialState.sorting) as ExtendedSortingState<TData>
+  const initialSorting = table.initialState
+    .sorting as ExtendedSortingState<TData>;
 
   const [sorting, setSorting] = useQueryState(
     "sort",
@@ -72,7 +63,7 @@ export function DataTableSortList<TData>({
         clearOnDefault: true,
         shallow,
       })
-  )
+  );
 
   const uniqueSorting = React.useMemo(
     () =>
@@ -80,9 +71,9 @@ export function DataTableSortList<TData>({
         (sort, index, self) => index === self.findIndex((t) => t.id === sort.id)
       ),
     [sorting]
-  )
+  );
 
-  const debouncedSetSorting = useDebouncedCallback(setSorting, debounceMs)
+  const debouncedSetSorting = useDebouncedCallback(setSorting, debounceMs);
 
   const sortableColumns = React.useMemo(
     () =>
@@ -98,13 +89,13 @@ export function DataTableSortList<TData>({
           selected: false,
         })),
     [sorting, table]
-  )
+  );
 
   function addSort() {
     const firstAvailableColumn = sortableColumns.find(
       (column) => !sorting.some((s) => s.id === column.id)
-    )
-    if (!firstAvailableColumn) return
+    );
+    if (!firstAvailableColumn) return;
 
     void setSorting([
       ...sorting,
@@ -112,7 +103,7 @@ export function DataTableSortList<TData>({
         id: firstAvailableColumn.id as StringKeyOf<TData>,
         desc: false,
       },
-    ])
+    ]);
   }
 
   function updateSort({
@@ -120,32 +111,30 @@ export function DataTableSortList<TData>({
     field,
     debounced = false,
   }: {
-    id: string
-    field: Partial<ExtendedColumnSort<TData>>
-    debounced?: boolean
+    id: string;
+    field: Partial<ExtendedColumnSort<TData>>;
+    debounced?: boolean;
   }) {
-    const updateFunction = debounced ? debouncedSetSorting : setSorting
+    const updateFunction = debounced ? debouncedSetSorting : setSorting;
 
     updateFunction((prevSorting) => {
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      if (!prevSorting) return prevSorting
+      if (!prevSorting) return prevSorting;
 
       const updatedSorting = prevSorting.map((sort) =>
         sort.id === id ? { ...sort, ...field } : sort
-      )
-      return updatedSorting
-    })
+      );
+      return updatedSorting;
+    });
   }
 
   function removeSort(id: string) {
     void setSorting((prevSorting) =>
       prevSorting.filter((item) => item.id !== id)
-    )
+    );
   }
 
   return (
     <Sortable
-      value={sorting}
       onValueChange={setSorting}
       overlay={
         <div className="flex items-center gap-2">
@@ -155,22 +144,23 @@ export function DataTableSortList<TData>({
           <div className="size-8 shrink-0 rounded-md bg-primary/10" />
         </div>
       }
+      value={sorting}
     >
       <Popover>
         <PopoverTrigger asChild>
           <Button
-            variant="outline"
-            size="sm"
-            className="gap-2"
-            aria-label="Open sorting"
             aria-controls={`${id}-sort-dialog`}
+            aria-label="Open sorting"
+            className="gap-2"
+            size="sm"
+            variant="outline"
           >
-            <ArrowDownUp className="size-3" aria-hidden="true" />
+            <ArrowDownUp aria-hidden="true" className="size-3" />
             Sort
             {uniqueSorting.length > 0 && (
               <Badge
+                className="h-[1.14rem] rounded-[0.2rem] px-[0.32rem] font-mono font-normal text-[0.65rem]"
                 variant="secondary"
-                className="h-[1.14rem] rounded-[0.2rem] px-[0.32rem] font-mono text-[0.65rem] font-normal"
               >
                 {uniqueSorting.length}
               </Badge>
@@ -178,20 +168,20 @@ export function DataTableSortList<TData>({
           </Button>
         </PopoverTrigger>
         <PopoverContent
-          id={`${id}-sort-dialog`}
           align="start"
-          collisionPadding={16}
           className={cn(
             "flex w-[calc(100vw-theme(spacing.20))] min-w-72 max-w-[25rem] origin-[var(--radix-popover-content-transform-origin)] flex-col p-4 sm:w-[25rem]",
             sorting.length > 0 ? "gap-3.5" : "gap-2"
           )}
+          collisionPadding={16}
+          id={`${id}-sort-dialog`}
         >
           {uniqueSorting.length > 0 ? (
             <h4 className="font-medium leading-none">Sort by</h4>
           ) : (
             <div className="flex flex-col gap-1">
               <h4 className="font-medium leading-none">No sorting applied</h4>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-muted-foreground text-sm">
                 Add sorting to organize your results.
               </p>
             </div>
@@ -199,47 +189,47 @@ export function DataTableSortList<TData>({
           <div className="flex max-h-40 flex-col gap-2 overflow-y-auto p-0.5">
             <div className="flex w-full flex-col gap-2">
               {uniqueSorting.map((sort) => {
-                const sortId = `${id}-sort-${sort.id}`
-                const fieldListboxId = `${sortId}-field-listbox`
-                const fieldTriggerId = `${sortId}-field-trigger`
-                const directionListboxId = `${sortId}-direction-listbox`
+                const sortId = `${id}-sort-${sort.id}`;
+                const fieldListboxId = `${sortId}-field-listbox`;
+                const fieldTriggerId = `${sortId}-field-trigger`;
+                const directionListboxId = `${sortId}-direction-listbox`;
 
                 return (
-                  <SortableItem key={sort.id} value={sort.id} asChild>
+                  <SortableItem asChild key={sort.id} value={sort.id}>
                     <div className="flex items-center gap-2">
                       <Popover modal>
                         <PopoverTrigger asChild>
                           <Button
-                            id={fieldTriggerId}
-                            variant="outline"
-                            size="sm"
-                            role="combobox"
-                            className="h-8 w-44 justify-between gap-2 rounded focus:outline-none focus:ring-1 focus:ring-ring"
                             aria-controls={fieldListboxId}
+                            className="h-8 w-44 justify-between gap-2 rounded focus:outline-none focus:ring-1 focus:ring-ring"
+                            id={fieldTriggerId}
+                            role="combobox"
+                            size="sm"
+                            variant="outline"
                           >
                             <span className="truncate">
                               {toSentenceCase(sort.id)}
                             </span>
                             <div className="ml-auto flex items-center gap-1">
                               {initialSorting.length === 1 &&
-                                initialSorting[0]?.id === sort.id ? (
+                              initialSorting[0]?.id === sort.id ? (
                                 <Badge
+                                  className="h-[1.125rem] rounded px-1 font-mono font-normal text-[0.65rem]"
                                   variant="secondary"
-                                  className="h-[1.125rem] rounded px-1 font-mono text-[0.65rem] font-normal"
                                 >
                                   Default
                                 </Badge>
                               ) : null}
                               <ChevronsUpDown
-                                className="size-4 shrink-0 opacity-50"
                                 aria-hidden="true"
+                                className="size-4 shrink-0 opacity-50"
                               />
                             </div>
                           </Button>
                         </PopoverTrigger>
                         <PopoverContent
-                          id={fieldListboxId}
                           className="w-[var(--radix-popover-trigger-width)] p-0"
+                          id={fieldListboxId}
                           onCloseAutoFocus={() =>
                             document.getElementById(fieldTriggerId)?.focus()
                           }
@@ -252,35 +242,35 @@ export function DataTableSortList<TData>({
                                 {sortableColumns.map((column) => (
                                   <CommandItem
                                     key={column.id}
-                                    value={column.id}
                                     onSelect={(value) => {
-                                      const newFieldTriggerId = `${id}-sort-${value}-field-trigger`
+                                      const newFieldTriggerId = `${id}-sort-${value}-field-trigger`;
 
                                       updateSort({
                                         id: sort.id,
                                         field: {
                                           id: value as StringKeyOf<TData>,
                                         },
-                                      })
+                                      });
 
                                       requestAnimationFrame(() => {
                                         document
                                           .getElementById(newFieldTriggerId)
-                                          ?.focus()
-                                      })
+                                          ?.focus();
+                                      });
                                     }}
+                                    value={column.id}
                                   >
                                     <span className="mr-1.5 truncate">
                                       {column.label}
                                     </span>
                                     <Check
+                                      aria-hidden="true"
                                       className={cn(
                                         "ml-auto size-4 shrink-0",
                                         column.id === sort.id
                                           ? "opacity-100"
                                           : "opacity-0"
                                       )}
-                                      aria-hidden="true"
                                     />
                                   </CommandItem>
                                 ))}
@@ -290,17 +280,17 @@ export function DataTableSortList<TData>({
                         </PopoverContent>
                       </Popover>
                       <Select
-                        value={sort.desc ? "desc" : "asc"}
                         onValueChange={(value: SortDirection) =>
                           updateSort({
                             id: sort.id,
                             field: { id: sort.id, desc: value === "desc" },
                           })
                         }
+                        value={sort.desc ? "desc" : "asc"}
                       >
                         <SelectTrigger
-                          aria-label="Select sort direction"
                           aria-controls={directionListboxId}
+                          aria-label="Select sort direction"
                           className="h-8 w-24 rounded"
                         >
                           <div className="truncate">
@@ -308,8 +298,8 @@ export function DataTableSortList<TData>({
                           </div>
                         </SelectTrigger>
                         <SelectContent
-                          id={directionListboxId}
                           className="min-w-[var(--radix-select-trigger-width)]"
+                          id={directionListboxId}
                         >
                           {dataTableConfig.sortOrders.map((order) => (
                             <SelectItem key={order.value} value={order.value}>
@@ -319,42 +309,42 @@ export function DataTableSortList<TData>({
                         </SelectContent>
                       </Select>
                       <Button
-                        variant="outline"
-                        size="icon"
                         aria-label={`Remove sort ${sort.id}`}
                         className="size-8 shrink-0 rounded"
                         onClick={() => removeSort(sort.id)}
+                        size="icon"
+                        variant="outline"
                       >
-                        <Trash2 className="size-3.5" aria-hidden="true" />
+                        <Trash2 aria-hidden="true" className="size-3.5" />
                       </Button>
                       <SortableDragHandle
-                        variant="outline"
-                        size="icon"
                         className="size-8 shrink-0 rounded"
+                        size="icon"
+                        variant="outline"
                       >
-                        <GripVertical className="size-3.5" aria-hidden="true" />
+                        <GripVertical aria-hidden="true" className="size-3.5" />
                       </SortableDragHandle>
                     </div>
                   </SortableItem>
-                )
+                );
               })}
             </div>
           </div>
           <div className="flex w-full items-center gap-2">
             <Button
-              size="sm"
               className="h-[1.85rem] rounded"
-              onClick={addSort}
               disabled={sorting.length >= sortableColumns.length}
+              onClick={addSort}
+              size="sm"
             >
               Add sort
             </Button>
             {sorting.length > 0 ? (
               <Button
-                size="sm"
-                variant="outline"
                 className="rounded"
                 onClick={() => setSorting(null)}
+                size="sm"
+                variant="outline"
               >
                 Reset sorting
               </Button>
@@ -363,5 +353,5 @@ export function DataTableSortList<TData>({
         </PopoverContent>
       </Popover>
     </Sortable>
-  )
+  );
 }

@@ -1,26 +1,29 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { Button } from "~/components/ui/button";
 import { Form } from "~/components/ui/form";
-import { createEditProductSchema, type CreateEditProductSchemaType } from "~/lib/validators";
+import {
+  type CreateEditProductSchemaType,
+  createEditProductSchema,
+} from "~/lib/validators";
 import type { AppRouterOutputs } from "~/server/api";
+import { api } from "~/trpc/react";
 import { ProductCreateEditDetailsForm } from "./product-create-edit-details-form";
 import { ProductCreateEditPricingForm } from "./product-create-edit-price-form";
 import { ProductCreateEditSEOForm } from "./product-create-edit-seo-form";
 import { ProductCreateEditStatusForm } from "./product-create-edit-status-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { api } from "~/trpc/react";
-import { Button } from "~/components/ui/button";
-import Link from "next/link";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 
 interface ProductCreateEditFormProps {
-  product?: AppRouterOutputs["product"]["getById"]
+  product?: AppRouterOutputs["product"]["getById"];
 }
 
 export function ProductCreateEditForm({ product }: ProductCreateEditFormProps) {
-  const router = useRouter()
+  const router = useRouter();
 
   const form = useForm<CreateEditProductSchemaType>({
     defaultValues: {
@@ -36,10 +39,10 @@ export function ProductCreateEditForm({ product }: ProductCreateEditFormProps) {
       mrp: product?.mrp ? Number(product?.mrp) : undefined,
       price: product?.price ? Number(product?.price) : undefined,
       status: product?.status ?? "draft",
-      tags: product?.tags as unknown as string[] ?? [],
+      tags: (product?.tags as unknown as string[]) ?? [],
     },
     resolver: zodResolver(createEditProductSchema),
-  })
+  });
 
   const { mutate, isPending } = api.product.upsert.useMutation({
     onSuccess: () => {
@@ -49,7 +52,7 @@ export function ProductCreateEditForm({ product }: ProductCreateEditFormProps) {
     onError: (err) => {
       toast.error(err.message);
     },
-  })
+  });
 
   const handleSubmit = form.handleSubmit(async (data) => {
     mutate({
@@ -72,30 +75,27 @@ export function ProductCreateEditForm({ product }: ProductCreateEditFormProps) {
 
   return (
     <Form {...form}>
-      <form
-        onSubmit={handleSubmit}
-        className="space-y-4"
-      >
-        <div className="bg-card border rounded-md p-4 flex items-center justify-start flex-row-reverse gap-2 w-full">
+      <form className="space-y-4" onSubmit={handleSubmit}>
+        <div className="flex w-full flex-row-reverse items-center justify-start gap-2 rounded-md border bg-card p-4">
           <Button
-            size="sm"
             disabled={isPending}
-            loading={isPending}
             loader="dots"
+            loading={isPending}
+            size="sm"
           >
             {isPending ? "Saving" : "Save"}
           </Button>
           <Link href="/admin/products">
             <Button
+              disabled={isPending}
+              size="sm"
               type="button"
               variant="outline"
-              size="sm"
-              disabled={isPending}
             >
               Discard
             </Button>
           </Link>
-          <h1 className="text-lg font-medium flex-1">
+          <h1 className="flex-1 font-medium text-lg">
             {product?.id ? "Edit" : "Create"} Product
           </h1>
         </div>

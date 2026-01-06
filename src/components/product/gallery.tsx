@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import React from "react";
 import {
   Carousel,
   CarouselMainContainer,
@@ -10,12 +11,11 @@ import {
   useCarousel,
 } from "~/components/ui/carousel";
 import { cn } from "~/lib/utils";
-import React from "react";
 import type { AppRouterOutputs } from "~/server/api";
 import { metaViewContent } from "~/server/pixel/meta";
 
 interface ProductImageGalleryProps {
-  product: NonNullable<AppRouterOutputs["product"]["getByHandle"]>
+  product: NonNullable<AppRouterOutputs["product"]["getByHandle"]>;
 }
 
 export function Gallery({ product }: ProductImageGalleryProps) {
@@ -26,72 +26,70 @@ export function Gallery({ product }: ProductImageGalleryProps) {
       const result = await metaViewContent({
         id: product.id,
         name: product.title,
-        price: parseFloat(product.price),
+        price: Number.parseFloat(product.price),
         currency: "BDT",
-      })
+      });
 
       console.log("VIEW_CONTENT_EVENT: ", result);
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    triggerViewContent()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    triggerViewContent();
   }, []);
 
   return (
     <Carousel
+      className="mx-auto flex max-w-[calc(100vw-2rem)] flex-col gap-2 sm:gap-4"
       orientation="horizontal"
-      className="flex flex-col gap-2 sm:gap-4 max-w-[calc(100vw-2rem)] mx-auto"
     >
-      <div className="relative border overflow-hidden aspect-square w-full h-max rounded-md">
+      <div className="relative aspect-square h-max w-full overflow-hidden rounded-md border">
         <CarouselMainContainer>
           {product?.images.map((img, idx) => (
-            <SliderMainItem key={idx} className="relative aspect-square">
+            <SliderMainItem className="relative aspect-square" key={idx}>
               <Image
-                src={img}
                 alt={`${product.title}-image-${idx + 1}`}
+                aria-roledescription="slide"
+                className="object-contain"
                 fill
                 key={idx}
-                role="group"
-                aria-roledescription="slide"
                 priority={idx === 0}
+                role="group"
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                className="object-contain"
+                src={img}
               />
             </SliderMainItem>
           ))}
         </CarouselMainContainer>
       </div>
       <CarouselThumb product={product} />
-    </Carousel >
+    </Carousel>
   );
 }
 
 function CarouselThumb({ product }: ProductImageGalleryProps) {
   "use memo";
 
-  const carousel = useCarousel()
+  const carousel = useCarousel();
 
   return (
     <CarouselThumbsContainer className="basis-1/4 gap-2 sm:gap-4">
       {product?.images.map((img, idx) => (
         <SliderThumbItem
-          key={idx}
-          index={idx}
           className={cn(
-            "border overflow-hidden relative size-20 max-w-max cursor-pointer transition-all p-0 rounded-md",
+            "relative size-20 max-w-max cursor-pointer overflow-hidden rounded-md border p-0 transition-all",
             carousel.activeIndex === idx ? "border-primary/50" : "border-border"
           )}
+          index={idx}
+          key={idx}
         >
           <Image
-            src={img}
             alt={`${product.title}-image-${idx + 1}`}
+            className="object-cover"
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className="object-cover"
+            src={img}
           />
         </SliderThumbItem>
       ))}
     </CarouselThumbsContainer>
-  )
+  );
 }

@@ -2,8 +2,12 @@ import { z } from "zod";
 
 export const baseProductSchema = z.object({
   id: z.string(),
-  title: z.string({ required_error: "Title is required" }).min(1, { message: "Title is required" }),
-  handle: z.string({ required_error: "Handle is required" }).min(1, { message: "Handle is required" }),
+  title: z
+    .string({ required_error: "Title is required" })
+    .min(1, { message: "Title is required" }),
+  handle: z
+    .string({ required_error: "Handle is required" })
+    .min(1, { message: "Handle is required" }),
   description: z.string(),
   shortDescription: z.string(),
   metaTitle: z.string(),
@@ -18,15 +22,19 @@ export const baseProductSchema = z.object({
   createdAt: z.date().optional(),
   updatedAt: z.date().optional(),
   deletedAt: z.date().optional(),
-})
+});
 
-export const createEditProductSchema = baseProductSchema.omit({
-  createdAt: true,
-  updatedAt: true,
-  deletedAt: true,
-}).extend({
-  id: z.string().optional(),
-})
+export const createEditProductSchema = baseProductSchema
+  .omit({
+    createdAt: true,
+    updatedAt: true,
+    deletedAt: true,
+  })
+  .extend({
+    id: z.string().optional(),
+  });
 
-export type ProductEntity = z.infer<typeof baseProductSchema>
-export type CreateEditProductSchemaType = z.infer<typeof createEditProductSchema>
+export type ProductEntity = z.infer<typeof baseProductSchema>;
+export type CreateEditProductSchemaType = z.infer<
+  typeof createEditProductSchema
+>;

@@ -9,22 +9,22 @@ export function DeliveryMethod() {
       <CardHeader>
         <CardTitle className="text-xl sm:text-2xl">Delivery Method</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4"> 
+      <CardContent className="space-y-4">
         <RadioGroup defaultValue="cod">
           <Label
+            className="flex w-full items-center rounded-md border bg-accent p-4 text-accent-foreground"
             htmlFor="homeDelivery"
-            className="flex items-center rounded-md border bg-accent text-accent-foreground p-4 w-full"
           >
             <RadioGroupItem
-              value="homeDelivery"
-              id="homeDelivery"
               className="hidden"
+              id="homeDelivery"
+              value="homeDelivery"
             />
-            <TruckIcon className="size-4 mr-2" />
+            <TruckIcon className="mr-2 size-4" />
             Home Delivery
           </Label>
         </RadioGroup>
       </CardContent>
     </Card>
-  )
+  );
 }

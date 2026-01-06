@@ -1,21 +1,21 @@
-"use client"
+"use client";
 
-import { SelectIcon } from "@radix-ui/react-select"
-import type { Column } from "@tanstack/react-table"
-import { ArrowDown, ArrowUp, ChevronsUpDown, EyeOff } from "lucide-react"
+import { SelectIcon } from "@radix-ui/react-select";
+import type { Column } from "@tanstack/react-table";
+import { ArrowDown, ArrowUp, ChevronsUpDown, EyeOff } from "lucide-react";
 
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
-} from "~/components/ui/select"
-import { cn } from "~/lib/utils"
+} from "~/components/ui/select";
+import { cn } from "~/lib/utils";
 
 interface DataTableColumnHeaderProps<TData, TValue>
   extends React.HTMLAttributes<HTMLDivElement> {
-  column: Column<TData, TValue>
-  title: string
+  column: Column<TData, TValue>;
+  title: string;
 }
 
 export function DataTableColumnHeader<TData, TValue>({
@@ -23,17 +23,22 @@ export function DataTableColumnHeader<TData, TValue>({
   title,
   className,
 }: DataTableColumnHeaderProps<TData, TValue>) {
-  if (!column.getCanSort() && !column.getCanHide()) {
-    return <div className={cn(className)}>{title}</div>
+  if (!(column.getCanSort() || column.getCanHide())) {
+    return <div className={cn(className)}>{title}</div>;
   }
 
-  const ascValue = `${column.id}-asc`
-  const descValue = `${column.id}-desc`
-  const hideValue = `${column.id}-hide`
+  const ascValue = `${column.id}-asc`;
+  const descValue = `${column.id}-desc`;
+  const hideValue = `${column.id}-hide`;
 
   return (
     <div className={cn("flex items-center gap-2", className)}>
       <Select
+        onValueChange={(value) => {
+          if (value === ascValue) column.toggleSorting(false);
+          else if (value === descValue) column.toggleSorting(true);
+          else if (value === hideValue) column.toggleVisibility(false);
+        }}
         value={
           column.getIsSorted() === "desc"
             ? descValue
@@ -41,11 +46,6 @@ export function DataTableColumnHeader<TData, TValue>({
               ? ascValue
               : undefined
         }
-        onValueChange={(value) => {
-          if (value === ascValue) column.toggleSorting(false)
-          else if (value === descValue) column.toggleSorting(true)
-          else if (value === hideValue) column.toggleVisibility(false)
-        }}
       >
         <SelectTrigger
           aria-label={
@@ -60,11 +60,11 @@ export function DataTableColumnHeader<TData, TValue>({
           {title}
           <SelectIcon asChild>
             {column.getCanSort() && column.getIsSorted() === "desc" ? (
-              <ArrowDown className="ml-2.5 size-4" aria-hidden="true" />
+              <ArrowDown aria-hidden="true" className="ml-2.5 size-4" />
             ) : column.getIsSorted() === "asc" ? (
-              <ArrowUp className="ml-2.5 size-4" aria-hidden="true" />
+              <ArrowUp aria-hidden="true" className="ml-2.5 size-4" />
             ) : (
-              <ChevronsUpDown className="ml-2.5 size-4" aria-hidden="true" />
+              <ChevronsUpDown aria-hidden="true" className="ml-2.5 size-4" />
             )}
           </SelectIcon>
         </SelectTrigger>
@@ -74,8 +74,8 @@ export function DataTableColumnHeader<TData, TValue>({
               <SelectItem value={ascValue}>
                 <span className="flex items-center">
                   <ArrowUp
-                    className="mr-2 size-3.5 text-muted-foreground/70"
                     aria-hidden="true"
+                    className="mr-2 size-3.5 text-muted-foreground/70"
                   />
                   Asc
                 </span>
@@ -83,8 +83,8 @@ export function DataTableColumnHeader<TData, TValue>({
               <SelectItem value={descValue}>
                 <span className="flex items-center">
                   <ArrowDown
-                    className="mr-2 size-3.5 text-muted-foreground/70"
                     aria-hidden="true"
+                    className="mr-2 size-3.5 text-muted-foreground/70"
                   />
                   Desc
                 </span>
@@ -95,8 +95,8 @@ export function DataTableColumnHeader<TData, TValue>({
             <SelectItem value={hideValue}>
               <span className="flex items-center">
                 <EyeOff
-                  className="mr-2 size-3.5 text-muted-foreground/70"
                   aria-hidden="true"
+                  className="mr-2 size-3.5 text-muted-foreground/70"
                 />
                 Hide
               </span>
@@ -105,5 +105,5 @@ export function DataTableColumnHeader<TData, TValue>({
         </SelectContent>
       </Select>
     </div>
-  )
+  );
 }

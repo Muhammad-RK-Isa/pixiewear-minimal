@@ -1,6 +1,6 @@
 import type { Table as TanstackTable } from "@tanstack/react-table";
 import { flexRender } from "@tanstack/react-table";
-import * as React from "react";
+import type * as React from "react";
 
 import { getCommonPinningStyles } from "~/lib/data-table";
 import { cn } from "~/lib/utils";
@@ -19,7 +19,7 @@ interface DataTableProps<TData> extends React.HTMLAttributes<HTMLDivElement> {
    * The table instance returned from useDataTable hook with pagination, sorting, filtering, etc.
    * @type TanstackTable<TData>
    */
-  table: TanstackTable<TData>
+  table: TanstackTable<TData>;
 
   /**
    * The floating bar to render at the bottom of the table on row selection.
@@ -27,7 +27,7 @@ interface DataTableProps<TData> extends React.HTMLAttributes<HTMLDivElement> {
    * @type React.ReactNode | null
    * @example floatingBar={<TasksTableFloatingBar table={table} />}
    */
-  floatingBar?: React.ReactNode | null
+  floatingBar?: React.ReactNode | null;
 }
 
 export function DataTable<TData>({
@@ -39,7 +39,10 @@ export function DataTable<TData>({
 }: DataTableProps<TData>) {
   return (
     <div
-      className={cn("w-full overflow-auto max-w-[calc(100vw-1.0625rem)] space-y-3.5", className)}
+      className={cn(
+        "w-full max-w-[calc(100vw-1.0625rem)] space-y-3.5 overflow-auto",
+        className
+      )}
       {...props}
     >
       {children}
@@ -51,8 +54,8 @@ export function DataTable<TData>({
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead
-                      key={header.id}
                       colSpan={header.colSpan}
+                      key={header.id}
                       style={{
                         ...getCommonPinningStyles({ column: header.column }),
                       }}
@@ -60,11 +63,11 @@ export function DataTable<TData>({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
                     </TableHead>
-                  )
+                  );
                 })}
               </TableRow>
             ))}
@@ -73,8 +76,8 @@ export function DataTable<TData>({
             {table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
-                  key={row.id}
                   data-state={row.getIsSelected() && "selected"}
+                  key={row.id}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell
@@ -94,8 +97,8 @@ export function DataTable<TData>({
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={table.getAllColumns().length}
                   className="h-24 text-center"
+                  colSpan={table.getAllColumns().length}
                 >
                   No results
                 </TableCell>
@@ -109,5 +112,5 @@ export function DataTable<TData>({
         {table.getFilteredSelectedRowModel().rows.length > 0 && floatingBar}
       </div>
     </div>
-  )
+  );
 }

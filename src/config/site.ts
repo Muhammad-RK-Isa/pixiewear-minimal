@@ -2,8 +2,8 @@ export type SiteConfig = typeof siteConfig;
 
 const links = {
   facebook: "https://www.facebook.com/pixiewearofficial",
-  instagram: "https://www.instagram.com/pixiewear.store"
-}
+  instagram: "https://www.instagram.com/pixiewear.store",
+};
 
 export const siteConfig = {
   name: "Pixiewear",
@@ -11,4 +11,4 @@ export const siteConfig = {
   url: "https://www.pixiewear.store",
   ogImage: "https://www.pixiewear.store/opengraph-image.png",
   links,
-}
+};

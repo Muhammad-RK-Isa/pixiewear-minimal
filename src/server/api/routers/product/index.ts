@@ -1,10 +1,10 @@
-import { z } from "zod";
 import type { TRPCRouterRecord } from "@trpc/server";
-import { adminProcedure, publicProcedure } from "../../trpc";
-import { getProductById } from "./get-product-by-id";
+import { z } from "zod";
 import { createEditProductSchema } from "~/lib/validators";
+import { adminProcedure, publicProcedure } from "../../trpc";
 import { createEditProduct } from "./create-edit-product";
 import { getProductByHandle } from "./get-product-by-handle";
+import { getProductById } from "./get-product-by-id";
 import { getPublicProducts } from "./get-public-products";
 
 export const productRouter = {
@@ -14,8 +14,7 @@ export const productRouter = {
   getByHandle: publicProcedure
     .input(z.string())
     .query(({ ctx, input }) => getProductByHandle(ctx, input)),
-  getPublic: publicProcedure
-    .query(({ ctx }) => getPublicProducts(ctx)),
+  getPublic: publicProcedure.query(({ ctx }) => getPublicProducts(ctx)),
   upsert: adminProcedure
     .input(createEditProductSchema)
     .mutation(({ ctx, input }) => createEditProduct(ctx, input)),

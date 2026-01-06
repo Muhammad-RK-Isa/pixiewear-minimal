@@ -15,13 +15,20 @@ export async function validateRequest() {
 
       if (session) {
         const sessionCookie = auth.generateSessionCookie(session.id);
-        (await cookies()).set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
+        (await cookies()).set(
+          sessionCookie.name,
+          sessionCookie.value,
+          sessionCookie.attributes
+        );
       } else {
         const sessionCookie = auth.generateBlankSessionCookie();
-        (await cookies()).set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
-
+        (await cookies()).set(
+          sessionCookie.name,
+          sessionCookie.value,
+          sessionCookie.attributes
+        );
       }
-    } catch { }
+    } catch {}
   }
   return { user, session };
-};
+}

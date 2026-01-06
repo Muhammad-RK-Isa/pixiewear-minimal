@@ -1,6 +1,6 @@
+import { count, eq } from "drizzle-orm";
 import { products } from "~/server/db/schema/products";
 import type { TRPCContext } from "../../trpc";
-import { count, eq } from "drizzle-orm";
 
 export async function getPublicProducts(ctx: TRPCContext) {
   try {
@@ -23,7 +23,7 @@ export async function getPublicProducts(ctx: TRPCContext) {
         })
         .from(products)
         .where(eq(products.status, "published"))
-        .groupBy(products.id)
+        .groupBy(products.id);
 
       const total = await tx
         .select({
@@ -32,19 +32,19 @@ export async function getPublicProducts(ctx: TRPCContext) {
         .from(products)
         .where(eq(products.status, "published"))
         .execute()
-        .then((res) => res[0]?.count ?? 0)
+        .then((res) => res[0]?.count ?? 0);
 
       return {
         data,
         total,
-      }
-    })
+      };
+    });
 
     return result;
   } catch (_) {
     return {
       data: [],
       total: 0,
-    }
+    };
   }
 }

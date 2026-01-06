@@ -32,8 +32,8 @@ export const KeyboundForm = React.forwardRef<
   return (
     <form
       {...rest}
-      onSubmit={handleSubmit}
       onKeyDown={onKeyDown ?? handleKeyDown}
+      onSubmit={handleSubmit}
       ref={ref}
     />
   );

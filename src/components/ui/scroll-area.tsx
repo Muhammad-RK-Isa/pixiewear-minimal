@@ -1,11 +1,12 @@
-import * as ScrollAreaPrimitive from '@radix-ui/react-scroll-area';
-import * as React from 'react';
+import * as ScrollAreaPrimitive from "@radix-ui/react-scroll-area";
+import type * as React from "react";
 import { cn } from "~/lib/utils";
-;
 
-const ScrollArea: React.FC<React.ComponentProps<typeof ScrollAreaPrimitive.Root>> = ({ className, children, ...props }) => (
+const ScrollArea: React.FC<
+  React.ComponentProps<typeof ScrollAreaPrimitive.Root>
+> = ({ className, children, ...props }) => (
   <ScrollAreaPrimitive.Root
-    className={cn('overflow-hidden', className)}
+    className={cn("overflow-hidden", className)}
     {...props}
   >
     {children}
@@ -16,9 +17,11 @@ const ScrollArea: React.FC<React.ComponentProps<typeof ScrollAreaPrimitive.Root>
 
 ScrollArea.displayName = ScrollAreaPrimitive.Root.displayName;
 
-const ScrollViewport: React.FC<React.ComponentProps<typeof ScrollAreaPrimitive.Viewport>> = ({ className, children, ...props }) => (
+const ScrollViewport: React.FC<
+  React.ComponentProps<typeof ScrollAreaPrimitive.Viewport>
+> = ({ className, children, ...props }) => (
   <ScrollAreaPrimitive.Viewport
-    className={cn('size-full rounded-[inherit]', className)}
+    className={cn("size-full rounded-[inherit]", className)}
     {...props}
   >
     {children}
@@ -27,15 +30,17 @@ const ScrollViewport: React.FC<React.ComponentProps<typeof ScrollAreaPrimitive.V
 
 ScrollViewport.displayName = ScrollAreaPrimitive.Viewport.displayName;
 
-const ScrollBar: React.FC<React.ComponentProps<typeof ScrollAreaPrimitive.Scrollbar>> = ({ className, orientation = 'vertical', ...props }) => (
+const ScrollBar: React.FC<
+  React.ComponentProps<typeof ScrollAreaPrimitive.Scrollbar>
+> = ({ className, orientation = "vertical", ...props }) => (
   <ScrollAreaPrimitive.Scrollbar
-    orientation={orientation}
     className={cn(
-      'flex select-none data-[state=hidden]:animate-fd-fade-out',
-      orientation === 'vertical' && 'h-full w-1.5',
-      orientation === 'horizontal' && 'h-1.5 flex-col',
-      className,
+      "flex select-none data-[state=hidden]:animate-fd-fade-out",
+      orientation === "vertical" && "h-full w-1.5",
+      orientation === "horizontal" && "h-1.5 flex-col",
+      className
     )}
+    orientation={orientation}
     {...props}
   >
     <ScrollAreaPrimitive.ScrollAreaThumb className="relative flex-1 rounded-full bg-fd-border" />
@@ -45,10 +50,4 @@ ScrollBar.displayName = ScrollAreaPrimitive.Scrollbar.displayName;
 
 type ScrollAreaProps = ScrollAreaPrimitive.ScrollAreaProps;
 
-export {
-  ScrollArea,
-  ScrollBar,
-  ScrollViewport,
-  type ScrollAreaProps
-};
-
+export { ScrollArea, ScrollBar, ScrollViewport, type ScrollAreaProps };

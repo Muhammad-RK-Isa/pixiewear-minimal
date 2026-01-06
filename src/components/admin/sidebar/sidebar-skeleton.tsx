@@ -2,18 +2,18 @@ import { Skeleton } from "~/components/ui/skeleton";
 
 export function SidebarSkeleton() {
   return (
-    <div className="lg:flex flex-col gap-2 border-r w-64 hidden">
-      <div className="border-b h-16 py-4 px-2">
-        <Skeleton className="w-full h-10" />
+    <div className="hidden w-64 flex-col gap-2 border-r lg:flex">
+      <div className="h-16 border-b px-2 py-4">
+        <Skeleton className="h-10 w-full" />
       </div>
-      <div className="gap-1 flex flex-col px-2">
+      <div className="flex flex-col gap-1 px-2">
         {Array.from({ length: 5 }).map((_, idx) => (
-          <Skeleton key={idx} className="w-full h-8" />
+          <Skeleton className="h-8 w-full" key={idx} />
         ))}
       </div>
       <div className="mt-auto px-2">
-        <Skeleton className="w-60 h-12 rounded-lg" />
+        <Skeleton className="h-12 w-60 rounded-lg" />
       </div>
     </div>
-  )
+  );
 }

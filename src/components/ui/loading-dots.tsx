@@ -1,5 +1,4 @@
 import { cn } from "~/lib/utils";
-;
 
 const dots = "mx-[1px] inline-block size-1 animate-blink rounded-full";
 

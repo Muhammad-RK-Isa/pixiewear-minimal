@@ -9,7 +9,7 @@ export default async function StoreLayout({
 }: {
   children: React.ReactNode;
 }) {
-  api.cart.get.prefetch();
+  await api.cart.get.prefetch();
   return (
     <MetaPageViewTrigger>
       <HydrateClient>

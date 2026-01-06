@@ -1,17 +1,32 @@
-import { boolean, decimal, integer, json, pgTable, text } from "drizzle-orm/pg-core";
-import { generateOrderId, generatePGTableId, lifecycleDates } from "~/lib/utils";
+import {
+  boolean,
+  decimal,
+  integer,
+  json,
+  pgTable,
+  text,
+} from "drizzle-orm/pg-core";
+import {
+  generateOrderId,
+  generatePGTableId,
+  lifecycleDates,
+} from "~/lib/utils";
 import type { CheckoutItemSchemaType } from "~/lib/validators";
 import { users } from "./users";
 
 export const orders = pgTable("orders", {
   id: generatePGTableId({ prefix: "order" }),
-  displayId: text("display_id").notNull().$defaultFn(() => generateOrderId()),
+  displayId: text("display_id")
+    .notNull()
+    .$defaultFn(() => generateOrderId()),
   items: json("items").$type<CheckoutItemSchemaType[] | null>().default(null),
   quantity: integer("quantity").notNull(),
   amount: decimal("amount", {
     precision: 10,
     scale: 2,
-  }).notNull().default("0.00"),
+  })
+    .notNull()
+    .default("0.00"),
   name: text("name").notNull(),
   email: text("email"),
   phone: text("phone").notNull(),
@@ -26,4 +41,4 @@ export const orders = pgTable("orders", {
     .references(() => users.id, { onDelete: "set null" })
     .notNull(),
   ...lifecycleDates,
-})
+});

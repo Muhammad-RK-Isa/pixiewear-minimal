@@ -1,14 +1,14 @@
-import type { AppRouterOutputs } from "~/server/api";
-import { Drawer, DrawerContent, DrawerFooter } from "../ui/drawer";
-import { Button } from "../ui/button";
-import Link from "next/link";
-import Image from "next/image";
 import { CheckCircle2Icon, ImageIcon } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
+import type { AppRouterOutputs } from "~/server/api";
+import { Button } from "../ui/button";
+import { Drawer, DrawerContent, DrawerFooter } from "../ui/drawer";
 
 interface AddToCartPopUpProps {
-  product: NonNullable<AppRouterOutputs["product"]["getByHandle"]>
-  open: boolean
-  onOpenChange: (open: boolean) => void
+  product: NonNullable<AppRouterOutputs["product"]["getByHandle"]>;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
 export function AddToCartPopUp({
@@ -17,16 +17,12 @@ export function AddToCartPopUp({
   onOpenChange,
 }: AddToCartPopUpProps) {
   return (
-    <Drawer open={open} onOpenChange={onOpenChange}>
+    <Drawer onOpenChange={onOpenChange} open={open}>
       <DrawerContent>
         <div className="flex space-x-2 px-4 pt-4">
-          <div className="relative aspect-square w-20 grid place-content-center rounded-md overflow-hidden">
+          <div className="relative grid aspect-square w-20 place-content-center overflow-hidden rounded-md">
             {product.images[0] ? (
-              <Image
-                src={product.images[0]}
-                alt={product.title}
-                fill
-              />
+              <Image alt={product.title} fill src={product.images[0]} />
             ) : (
               <ImageIcon className="size-10 text-muted-foreground" />
             )}
@@ -41,18 +37,18 @@ export function AddToCartPopUp({
         </div>
         <DrawerFooter>
           <Button
-            variant="outline"
-            size="lg"
             className="w-full"
             onClick={() => onOpenChange(false)}
+            size="lg"
+            variant="outline"
           >
             Continue Shopping
           </Button>
           <Link href="/cart">
             <Button
-              size="lg"
               className="w-full"
               onClick={() => onOpenChange(false)}
+              size="lg"
             >
               View cart
             </Button>
@@ -60,5 +56,5 @@ export function AddToCartPopUp({
         </DrawerFooter>
       </DrawerContent>
     </Drawer>
-  )
+  );
 }

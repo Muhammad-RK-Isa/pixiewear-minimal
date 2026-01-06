@@ -1,31 +1,28 @@
-import type { CartItem } from "~/lib/validators";
-import type { TRPCContext } from "../../trpc";
 import { TRPCError } from "@trpc/server";
-import { cookies } from "next/headers";
-import { carts } from "~/server/db/schema/carts";
 import { eq } from "drizzle-orm";
+import { cookies } from "next/headers";
+import type { CartItem } from "~/lib/validators";
+import { carts } from "~/server/db/schema/carts";
+import type { TRPCContext } from "../../trpc";
 
 export async function addToCart(ctx: TRPCContext, input: CartItem) {
   const product = await ctx.db.query.products.findFirst({
     where: (t, { eq, and }) =>
-      and(
-        eq(t.id, input.productId),
-        eq(t.status, "published"),
-      )
-  })
+      and(eq(t.id, input.productId), eq(t.status, "published")),
+  });
 
   if (!product) {
     throw new TRPCError({
       code: "NOT_FOUND",
       message: "Product not found",
-    })
+    });
   }
 
   if (product.inventory < input.quantity) {
     throw new TRPCError({
       code: "NOT_FOUND",
-      message: "Product is out of stock, please try again later."
-    })
+      message: "Product is out of stock, please try again later.",
+    });
   }
 
   const cookieStore = await cookies();
@@ -40,55 +37,55 @@ export async function addToCart(ctx: TRPCContext, input: CartItem) {
       })
       .returning({
         id: carts.id,
-      })
+      });
 
-    cookieStore.set("cartId", String(newCart?.id))
+    cookieStore.set("cartId", String(newCart?.id));
 
-    return
-  };
+    return;
+  }
 
   const cart = await ctx.db.query.carts.findFirst({
     where: eq(carts.id, cartId),
-  })
+  });
 
   if (!cart) {
     cookieStore.set({
       name: "cartId",
       value: "",
       expires: new Date(0),
-    })
+    });
 
-    await ctx.db.delete(carts).where(eq(carts.id, cartId))
+    await ctx.db.delete(carts).where(eq(carts.id, cartId));
 
     throw new TRPCError({
       code: "NOT_FOUND",
       message: "Cart not found",
-    })
+    });
   }
 
   if (cart.closed) {
-    await ctx.db.delete(carts).where(eq(carts.id, cartId))
+    await ctx.db.delete(carts).where(eq(carts.id, cartId));
 
     const [newCart] = await ctx.db
       .insert(carts)
       .values({
         items: [input],
       })
-      .returning({ id: carts.id })
+      .returning({ id: carts.id });
 
-    cookieStore.set("cartId", String(newCart?.id))
+    cookieStore.set("cartId", String(newCart?.id));
 
-    return
+    return;
   }
 
   const cartItem = cart.items?.find(
     (item) => item.productId === input.productId
-  )
+  );
 
   if (cartItem) {
-    cartItem.quantity += input.quantity
+    cartItem.quantity += input.quantity;
   } else {
-    cart.items?.push(input)
+    cart.items?.push(input);
   }
 
   await ctx.db
@@ -96,7 +93,7 @@ export async function addToCart(ctx: TRPCContext, input: CartItem) {
     .set({
       items: cart.items,
     })
-    .where(eq(carts.id, cartId))
+    .where(eq(carts.id, cartId));
 
-  return
+  return;
 }

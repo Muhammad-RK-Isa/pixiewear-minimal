@@ -1,8 +1,3 @@
 export default async function Products() {
-  
-  return (
-    <div>
-
-    </div>
-  )
+  return <div></div>;
 }

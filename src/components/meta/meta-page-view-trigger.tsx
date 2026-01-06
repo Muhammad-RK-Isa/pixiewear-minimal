@@ -3,8 +3,11 @@
 import React from "react";
 import { metaPageView } from "~/server/pixel/meta";
 
-export function MetaPageViewTrigger({ children }: { children: React.ReactNode }) {
-
+export function MetaPageViewTrigger({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   React.useEffect(() => {
     const triggerPageView = async () => {
       try {
@@ -15,7 +18,6 @@ export function MetaPageViewTrigger({ children }: { children: React.ReactNode })
       }
     };
 
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     triggerPageView();
   }, []);
 

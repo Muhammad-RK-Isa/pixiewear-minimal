@@ -13,30 +13,30 @@ export async function signIn(ctx: TRPCContext, input: SignInSchemaType) {
         and(
           eq(t.identifier, input.phone),
           eq(t.code, input.verificationCode),
-          gte(t.expiresAt, new Date()),
-        )
-    })
+          gte(t.expiresAt, new Date())
+        ),
+    });
 
     if (!validVerificationCode)
       throw new TRPCError({
         code: "UNAUTHORIZED",
         message: "Verification code is invalid or has expired",
       });
-    
+
     await tx
       .delete(securityCodes)
       .where(
         and(
           eq(securityCodes.identifier, input.phone),
-          eq(securityCodes.code, input.verificationCode),
+          eq(securityCodes.code, input.verificationCode)
         )
-      )
+      );
 
     const user = await tx.query.users.findFirst({
       where: (t, { eq }) => eq(t.phone, input.phone),
       columns: {
         id: true,
-      }
+      },
     });
 
     if (!user) {
@@ -47,24 +47,23 @@ export async function signIn(ctx: TRPCContext, input: SignInSchemaType) {
         })
         .returning({
           id: users.id,
-        })
+        });
 
       if (!newUser) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
           message: "Failed to create user",
-        })
+        });
       }
-      return newUser
+      return newUser;
     }
 
     return user;
-  })
-
+  });
 
   const session = await auth.createSession({
     userId: result.id,
-  })
+  });
 
   const sessionCookie = auth.generateSessionCookie(session.id);
 
@@ -72,7 +71,7 @@ export async function signIn(ctx: TRPCContext, input: SignInSchemaType) {
     sessionCookie.name,
     sessionCookie.value,
     sessionCookie.attributes
-  )
+  );
 
-  return { success: true }
+  return { success: true };
 }

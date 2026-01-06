@@ -1,14 +1,14 @@
-import { cookies } from "next/headers";
-import type { TRPCContext } from "../../trpc";
 import { and, asc, eq, inArray, isNull } from "drizzle-orm";
+import { cookies } from "next/headers";
 import { carts, products } from "~/server/db/schema";
+import type { TRPCContext } from "../../trpc";
 
 export async function getCart(ctx: TRPCContext) {
   const cookieStore = await cookies();
 
   const cartId = cookieStore.get("cartId")?.value;
 
-  if (!cartId) return []
+  if (!cartId) return [];
 
   try {
     const cart = await ctx.db.query.carts.findFirst({
@@ -16,13 +16,13 @@ export async function getCart(ctx: TRPCContext) {
         items: true,
       },
       where: eq(carts.id, cartId),
-    })
+    });
 
-    const productIds = cart?.items?.map((item) => item.productId) ?? []
+    const productIds = cart?.items?.map((item) => item.productId) ?? [];
 
-    if (productIds.length === 0) return []
+    if (productIds.length === 0) return [];
 
-    const uniqueProductIds = [...new Set(productIds)]
+    const uniqueProductIds = [...new Set(productIds)];
 
     const cartLineItems = await ctx.db
       .select({
@@ -38,7 +38,7 @@ export async function getCart(ctx: TRPCContext) {
         and(
           inArray(products.id, uniqueProductIds),
           eq(products.status, "published"),
-          isNull(products.deletedAt),
+          isNull(products.deletedAt)
         )
       )
       .groupBy(products.id)
@@ -48,19 +48,19 @@ export async function getCart(ctx: TRPCContext) {
         return items.map((item) => {
           const quantity = cart?.items?.find(
             (cartItem) => cartItem.productId === item.id
-          )?.quantity
+          )?.quantity;
 
           return {
             ...item,
             quantity: quantity ?? 0,
             price: Number(item.price),
             mrp: Number(item.mrp),
-          }
-        })
-      })
-    
+          };
+        });
+      });
+
     return cartLineItems;
   } catch (_) {
-    return []
+    return [];
   }
 }

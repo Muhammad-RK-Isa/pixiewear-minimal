@@ -1,14 +1,13 @@
 "use client";
 
-import * as React from "react"
-
-import { Button } from "./button"
-import type { ButtonProps } from "./button"
-import { CheckIcon, CopyIcon } from "lucide-react"
-import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip"
+import { CheckIcon, CopyIcon } from "lucide-react";
+import * as React from "react";
+import type { ButtonProps } from "./button";
+import { Button } from "./button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip";
 
 interface CopyButtonProps extends ButtonProps {
-  showTooltip?: boolean
+  showTooltip?: boolean;
 }
 
 export function CopyButton({
@@ -16,27 +15,27 @@ export function CopyButton({
   showTooltip = true,
   ...props
 }: CopyButtonProps) {
-  const [isCopied, setIsCopied] = React.useState(false)
+  const [isCopied, setIsCopied] = React.useState(false);
 
   return (
     <Tooltip>
       <TooltipTrigger asChild>
         <Button
-          variant="outline"
-          size="icon"
           className="size-7"
           onClick={() => {
-            if (typeof window === "undefined") return
-            setIsCopied(true)
-            void window.navigator.clipboard.writeText(value?.toString() ?? "")
-            setTimeout(() => setIsCopied(false), 2000)
+            if (typeof window === "undefined") return;
+            setIsCopied(true);
+            void window.navigator.clipboard.writeText(value?.toString() ?? "");
+            setTimeout(() => setIsCopied(false), 2000);
           }}
+          size="icon"
+          variant="outline"
           {...props}
         >
           {isCopied ? (
-            <CheckIcon className="size-4" aria-hidden="true" />
+            <CheckIcon aria-hidden="true" className="size-4" />
           ) : (
-            <CopyIcon className="size-4" aria-hidden="true" />
+            <CopyIcon aria-hidden="true" className="size-4" />
           )}
           <span className="sr-only">
             {isCopied ? "Copied" : "Copy to clipboard"}
@@ -49,5 +48,5 @@ export function CopyButton({
         </TooltipContent>
       ) : null}
     </Tooltip>
-  )
+  );
 }

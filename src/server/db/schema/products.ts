@@ -11,23 +11,15 @@ export const products = pgTable("products", {
   metaDescription: text("meta_description"),
   metaTitle: text("meta_title"),
   status: text("status", {
-    enum: [
-      "published",
-      "draft",
-      "archived",
-    ]
-  }).notNull().default("draft"),
+    enum: ["published", "draft", "archived"],
+  })
+    .notNull()
+    .default("draft"),
   vendor: text("vendor"),
-  tags: text("tags")
-    .array()
-    .notNull()
-    .default(sql`'{}'::text[]`),
-  images: text("images")
-    .array()
-    .notNull()
-    .default(sql`'{}'::text[]`),
+  tags: text("tags").array().notNull().default(sql`'{}'::text[]`),
+  images: text("images").array().notNull().default(sql`'{}'::text[]`),
   mrp: decimal("mrp", { precision: 10, scale: 2 }).notNull(),
   price: decimal("price", { precision: 10, scale: 2 }).notNull(),
   inventory: integer("inventory").notNull().default(0),
   ...lifecycleDates,
-})
+});

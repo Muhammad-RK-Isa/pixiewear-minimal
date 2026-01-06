@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
 import { Check } from "lucide-react";
-import * as React from "react";
+import type * as React from "react";
 
 import {
   Command,
@@ -20,45 +20,54 @@ import {
 } from "~/components/ui/popover";
 import { cn } from "~/lib/utils";
 
-const FacetedFilter = Popover
+const FacetedFilter = Popover;
 
-const FacetedFilterTrigger: React.FC<React.ComponentProps<typeof PopoverTrigger>> = ({ className, children, ...props }) => (
+const FacetedFilterTrigger: React.FC<
+  React.ComponentProps<typeof PopoverTrigger>
+> = ({ className, children, ...props }) => (
   <PopoverTrigger className={cn(className)} {...props}>
     {children}
   </PopoverTrigger>
-)
-FacetedFilterTrigger.displayName = "FacetedFilterTrigger"
+);
+FacetedFilterTrigger.displayName = "FacetedFilterTrigger";
 
-const FacetedFilterContent: React.FC<React.ComponentProps<typeof PopoverContent>> = ({ className, children, ...props }) => (
+const FacetedFilterContent: React.FC<
+  React.ComponentProps<typeof PopoverContent>
+> = ({ className, children, ...props }) => (
   <PopoverContent
-    className={cn("w-[12.5rem] p-0", className)}
     align="start"
+    className={cn("w-[12.5rem] p-0", className)}
     {...props}
   >
     <Command>{children}</Command>
   </PopoverContent>
-)
-FacetedFilterContent.displayName = "FacetedFilterContent"
+);
+FacetedFilterContent.displayName = "FacetedFilterContent";
 
-const FacetedFilterInput = CommandInput
+const FacetedFilterInput = CommandInput;
 
-const FacetedFilterList = CommandList
+const FacetedFilterList = CommandList;
 
-const FacetedFilterEmpty = CommandEmpty
+const FacetedFilterEmpty = CommandEmpty;
 
-const FacetedFilterGroup = CommandGroup
+const FacetedFilterGroup = CommandGroup;
 
 interface FacetedFilterItemProps
   extends React.ComponentProps<typeof CommandItem> {
-  selected: boolean
+  selected: boolean;
 }
 
-const FacetedFilterItem: React.FC<FacetedFilterItemProps> = ({ className, children, selected, ...props }) => {
+const FacetedFilterItem: React.FC<FacetedFilterItemProps> = ({
+  className,
+  children,
+  selected,
+  ...props
+}) => {
   return (
     <CommandItem
       aria-selected={selected}
-      data-selected={selected}
       className={cn(className)}
+      data-selected={selected}
       {...props}
     >
       <span
@@ -73,17 +82,23 @@ const FacetedFilterItem: React.FC<FacetedFilterItemProps> = ({ className, childr
       </span>
       {children}
     </CommandItem>
-  )
-}
-FacetedFilterItem.displayName = "FacetedFilterItem"
+  );
+};
+FacetedFilterItem.displayName = "FacetedFilterItem";
 
-const FacetedFilterSeparator = CommandSeparator
+const FacetedFilterSeparator = CommandSeparator;
 
-const FacetedFilterShortcut = CommandShortcut
+const FacetedFilterShortcut = CommandShortcut;
 
 export {
-  FacetedFilter, FacetedFilterContent, FacetedFilterEmpty,
-  FacetedFilterGroup, FacetedFilterInput, FacetedFilterItem, FacetedFilterList, FacetedFilterSeparator,
-  FacetedFilterShortcut, FacetedFilterTrigger
+  FacetedFilter,
+  FacetedFilterContent,
+  FacetedFilterEmpty,
+  FacetedFilterGroup,
+  FacetedFilterInput,
+  FacetedFilterItem,
+  FacetedFilterList,
+  FacetedFilterSeparator,
+  FacetedFilterShortcut,
+  FacetedFilterTrigger,
 };
-

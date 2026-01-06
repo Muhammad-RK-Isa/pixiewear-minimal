@@ -12,37 +12,37 @@ export function CartItems() {
 
   if (cartLineItems?.length)
     return (
-      <div className="rounded-md border bg-card p-4 lg:p-6 lg:col-span-2 h-max shadow-sm">
+      <div className="h-max rounded-md border bg-card p-4 shadow-sm lg:col-span-2 lg:p-6">
         <CartLineItems items={cartLineItems} />
       </div>
-    )
+    );
 
   return (
     <section
-      id="cart-page-empty-cart"
       aria-labelledby="cart-page-empty-cart-heading"
       className="flex h-full flex-col items-center justify-center space-y-1 pt-16 lg:col-span-3"
+      id="cart-page-empty-cart"
     >
       <ShoppingCartIcon
-        className="mb-4 size-16 text-muted-foreground"
         aria-hidden="true"
+        className="mb-4 size-16 text-muted-foreground"
       />
-      <div className="text-xl font-medium text-muted-foreground">
+      <div className="font-medium text-muted-foreground text-xl">
         Your cart is empty
       </div>
       <Link
         aria-label="Add items to your cart to checkout"
-        href="/"
         className={cn(
           buttonVariants({
             variant: "link",
             size: "sm",
-            className: "text-sm text-muted-foreground",
+            className: "text-muted-foreground text-sm",
           })
         )}
+        href="/"
       >
         Add some items to your cart
       </Link>
     </section>
-  )
+  );
 }

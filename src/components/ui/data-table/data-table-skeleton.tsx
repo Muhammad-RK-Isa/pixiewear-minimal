@@ -14,35 +14,35 @@ interface DataTableSkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
    * The number of columns in the table.
    * @type number
    */
-  columnCount: number
+  columnCount: number;
 
   /**
    * The number of rows in the table.
    * @default 10
    * @type number | undefined
    */
-  rowCount?: number
+  rowCount?: number;
 
   /**
    * The number of searchable columns in the table.
    * @default 0
    * @type number | undefined
    */
-  searchableColumnCount?: number
+  searchableColumnCount?: number;
 
   /**
    * The number of filterable columns in the table.
    * @default 0
    * @type number | undefined
    */
-  filterableColumnCount?: number
+  filterableColumnCount?: number;
 
   /**
    * Flag to show the table view options.
    * @default undefined
    * @type boolean | undefined
    */
-  showViewOptions?: boolean
+  showViewOptions?: boolean;
 
   /**
    * The width of each cell in the table.
@@ -51,21 +51,21 @@ interface DataTableSkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
    * @default ["auto"]
    * @type string[] | undefined
    */
-  cellWidths?: string[]
+  cellWidths?: string[];
 
   /**
    * Flag to show the pagination bar.
    * @default true
    * @type boolean | undefined
    */
-  withPagination?: boolean
+  withPagination?: boolean;
 
   /**
    * Flag to prevent the table cells from shrinking.
    * @default false
    * @type boolean | undefined
    */
-  shrinkZero?: boolean
+  shrinkZero?: boolean;
 }
 
 export function DataTableSkeleton(props: DataTableSkeletonProps) {
@@ -80,43 +80,44 @@ export function DataTableSkeleton(props: DataTableSkeletonProps) {
     shrinkZero = false,
     className,
     ...skeletonProps
-  } = props
+  } = props;
 
   return (
     <div
-      className={cn("w-full space-y-3.5 max-w-[calc(100vw-1.0625rem)] overflow-auto", className)}
+      className={cn(
+        "w-full max-w-[calc(100vw-1.0625rem)] space-y-3.5 overflow-auto",
+        className
+      )}
       {...skeletonProps}
     >
       <div className="flex w-full items-center justify-between space-x-2 overflow-auto py-1">
         <div className="flex flex-1 items-center space-x-2">
           {searchableColumnCount > 0
             ? Array.from({ length: searchableColumnCount }).map((_, i) => (
-              <SlowSKeleton key={i} className="h-8 w-40 lg:w-64" />
-            ))
+                <SlowSKeleton className="h-8 w-40 lg:w-64" key={i} />
+              ))
             : null}
           {filterableColumnCount > 0
             ? Array.from({ length: filterableColumnCount }).map((_, i) => (
-              <SlowSKeleton key={i} className="h-8 w-20 border-dashed" />
-            ))
+                <SlowSKeleton className="h-8 w-20 border-dashed" key={i} />
+              ))
             : null}
         </div>
-        {showViewOptions ? (
-          <SlowSKeleton className="ml-auto h-7 w-24" />
-        ) : null}
+        {showViewOptions ? <SlowSKeleton className="ml-auto h-7 w-24" /> : null}
       </div>
       <div className="rounded-md border">
         <Table>
           <TableHeader>
             {Array.from({ length: 1 }).map((_, i) => (
-              <TableRow key={i} className="hover:bg-transparent">
+              <TableRow className="hover:bg-transparent" key={i}>
                 {Array.from({ length: columnCount }).map((_, j) => (
                   <TableHead
+                    className="p-1"
                     key={j}
                     style={{
                       width: cellWidths[j],
                       minWidth: shrinkZero ? cellWidths[j] : "auto",
                     }}
-                    className="p-1"
                   >
                     <SlowSKeleton className="h-7 w-full" />
                   </TableHead>
@@ -126,15 +127,15 @@ export function DataTableSkeleton(props: DataTableSkeletonProps) {
           </TableHeader>
           <TableBody>
             {Array.from({ length: rowCount }).map((_, i) => (
-              <TableRow key={i} className="hover:bg-transparent">
+              <TableRow className="hover:bg-transparent" key={i}>
                 {Array.from({ length: columnCount }).map((_, j) => (
                   <TableCell
+                    className="p-1"
                     key={j}
                     style={{
                       width: cellWidths[j],
                       minWidth: shrinkZero ? cellWidths[j] : "auto",
                     }}
-                    className="p-1"
                   >
                     <SlowSKeleton className="h-[calc(2.5rem-0.5px)] w-full" />
                   </TableCell>
@@ -152,7 +153,7 @@ export function DataTableSkeleton(props: DataTableSkeletonProps) {
               <SlowSKeleton className="h-7 w-24" />
               <SlowSKeleton className="h-7 w-[4.5rem]" />
             </div>
-            <div className="flex items-center justify-center text-sm font-medium">
+            <div className="flex items-center justify-center font-medium text-sm">
               <SlowSKeleton className="h-7 w-20" />
             </div>
             <div className="flex items-center space-x-2">
@@ -165,11 +166,13 @@ export function DataTableSkeleton(props: DataTableSkeletonProps) {
         </div>
       ) : null}
     </div>
-  )
+  );
 }
 
 function SlowSKeleton({ className }: { className: string }) {
   return (
-    <Skeleton className={cn("before:animate-[shimmer_2.5s_infinite]", className)} />
-  )
+    <Skeleton
+      className={cn("before:animate-[shimmer_2.5s_infinite]", className)}
+    />
+  );
 }

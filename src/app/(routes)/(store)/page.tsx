@@ -5,7 +5,7 @@ export default async function Home() {
   const { data } = await api.product.getPublic();
 
   return (
-    <div className="w-full grid max-w-screen-xl mx-auto p-4 lg:py-8 lg:px-0">
+    <div className="mx-auto grid w-full max-w-screen-xl p-4 lg:px-0 lg:py-8">
       <Products products={data} />
     </div>
   );
